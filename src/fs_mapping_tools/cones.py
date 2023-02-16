@@ -4,7 +4,7 @@ Author:
     Paulo Sanchez (@erlete)
 """
 
-from typing import Tuple
+from typing import Any, List, Sequence, Union
 
 import matplotlib
 import numpy as np
@@ -210,7 +210,7 @@ class Cone:
         return f"Cone({self.position.x}, {self.position.y}, {self.type})"
 
 
-class ConeArray:
+class ConeArray(Sequence):
     """Cone array representation class.
 
     This class is used to represent an ordered group of cones. It supports any
@@ -229,23 +229,23 @@ class ConeArray:
         Args:
             cones (Cone): cones in the array. Must be of the same type.
         """
-        self.cones = cones
+        self.cones = list(cones)
 
     @property
-    def cones(self) -> Tuple[Cone, ...]:
+    def cones(self) -> List[Cone]:
         """Get the cones in the array.
 
         Returns:
-            Tuple[Cone, ...]: tuple of cones in the array.
+            List[Cone]: list of cones in the array.
         """
         return self._cones
 
     @cones.setter
-    def cones(self, cones: Tuple[Cone]) -> None:
+    def cones(self, cones: List[Cone]) -> None:
         """Set the cones in the array.
 
         Args:
-            cones (Tuple[Cone]): tuple of cones in the array. Must be of the
+            cones (List[Cone]): list of cones in the array. Must be of the
                 same type.
 
         Raises:
@@ -274,3 +274,137 @@ class ConeArray:
             str: type of cones in the array.
         """
         return self.cones[0].type
+
+    def append(self, cone: Cone) -> None:
+        """Append a cone to the array.
+
+        Args:
+            cone (Cone): cone to append to the array.
+
+        Raises:
+            TypeError: if `cone` is not a `Cone` instance.
+            ValueError: if `cone` is not of the same type as the cones in the
+                array.
+        """
+        if not isinstance(cone, Cone):
+            raise TypeError("cone must be a Cone instance", type(cone))
+
+        if cone.type != self.type:
+            raise ValueError(
+                "cone must be of the same type as the cones in the array"
+            )
+
+        self._cones.append(cone)
+
+    def extend(self, cones: List[Cone]) -> None:
+        """Extend the array with a list of cones.
+
+        Args:
+            cones (List[Cone]): list of cones to extend the array with.
+
+        Raises:
+            TypeError: if `cones` is not an iterable sequence.
+            TypeError: if any element in `cones` is not a `Cone` instance.
+            ValueError: if `cones` contains mixed types of cones.
+            ValueError: if `cones` is not of the same type as the cones in the
+                array.
+        """
+        if not isinstance(cones, (tuple, list, set, np.ndarray)):
+            raise TypeError("cones must be an iterable sequence")
+
+        if not all(isinstance(cone, Cone) for cone in cones):
+            raise TypeError(
+                "all elements in the iterable sequence must be Cone instances"
+            )
+
+        if len(set(cone.type for cone in cones)) > 1:
+            raise ValueError("all cones must be of the same type")
+
+        if cones[0].type != self.type:
+            raise ValueError("cones must be of the same type as the cones in "
+                             "the array")
+
+        self._cones.extend(cones)
+
+    def plot(self, ax: matplotlib.axes.Axes = plt.gca(),
+             detail: bool = False) -> None:
+        """Plot the cones in a `matplotlib` figure.
+
+        Args:
+            ax (matplotlib.axes.Axes, optional): the ax to plot the cones in.
+                Defaults to plt.gca().
+            detail (bool, optional): whether to plot all the details of the
+                cones (can affect performance). Defaults to False.
+        """
+        for cone in self.cones:
+            cone.plot(ax=ax, detail=detail)
+
+    def __getitem__(self, index: Union[int, slice]) -> Any:
+        """Get a cone from the array via index or slice.
+
+        Args:
+            index (int | slice): index or slice of the cone(s) to get.
+
+        Returns:
+            Any: cone(s) at the specified index or slice.
+
+        Raises:
+            TypeError: if `index` is not an integer or slice.
+        """
+        if not isinstance(index, int):
+            raise TypeError("index must be an integer or slice")
+
+        return self._cones[index]
+
+    def __setitem__(self, index: Union[int, slice], cone: Cone) -> None:
+        """Set a cone in the array via index or slice.
+
+        Args:
+            index (int | slice): index or slice of the cone(s) to set.
+            cone (Cone): cone to set at the specified index or slice.
+
+        Raises:
+            TypeError: if `index` is not an integer or slice.
+            TypeError: if `cone` is not a `Cone` instance.
+            ValueError: if `cone` is not of the same type as the cones in the
+                array.
+        """
+        if not isinstance(index, int):
+            raise TypeError("index must be an integer or slice")
+
+        if not isinstance(cone, Cone):
+            raise TypeError("cone must be a Cone instance")
+
+        if cone.type != self.type:
+            raise ValueError("cone must be of the same type as the cones in "
+                             "the array")
+
+        self._cones[index] = cone
+
+    def __len__(self) -> int:
+        """Get the number of cones in the array.
+
+        Returns:
+            int: number of cones in the array.
+        """
+        return len(self._cones)
+
+    def __repr__(self) -> str:
+        """Get the raw representation of the cone array.
+
+        Returns:
+            str: raw representation of the cone array.
+        """
+        return f"ConeArray({len(self._cones)} cones)"
+
+    def __str__(self) -> str:
+        """Get the string representation of the cone array.
+
+        Returns:
+            str: string representation of the cone array.
+        """
+        return (
+            "ConeArray(\n    "
+            + '\n    '.join(str(cone) for cone in self._cones)
+            + "\n)"
+        )
