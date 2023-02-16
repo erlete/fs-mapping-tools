@@ -1,3 +1,9 @@
+"""Testing suites for the cones module.
+
+Author:
+    Paulo Sanchez (@erlete)
+"""
+
 import pytest
 from bidimensional import Coordinate
 
@@ -5,10 +11,12 @@ from fs_mapping_tools import Cone, ConeArray
 
 
 class TestCone:
+    """Testing suite for the Cone class."""
 
     ZERO = Coordinate(0, 0)
 
-    def test_instance(self):
+    def test_instance(self) -> None:
+        """Test class instantiation."""
         with pytest.raises(TypeError):
             # Incorrect `position` data type:
             Cone(1, "yellow")
@@ -26,6 +34,7 @@ class TestCone:
         Cone(self.ZERO, "orange-big")
 
     def test_access(self) -> None:
+        """Test class attributes."""
         c1 = Cone(self.ZERO, "yellow")
         c2 = Cone(self.ZERO, "blue")
         c3 = Cone(self.ZERO, "orange")
@@ -45,7 +54,8 @@ class TestCone:
         assert c3.type == "orange"
         assert c4.type == "orange-big"
 
-    def test_eq(self):
+    def test_eq(self) -> None:
+        """Test class equality."""
         c1 = Cone(self.ZERO, "yellow")
         c2 = Cone(self.ZERO, "blue")
         c3 = Cone(self.ZERO, "orange")
@@ -56,7 +66,8 @@ class TestCone:
         assert c3 == c3
         assert c4 == c4
 
-    def test_ne(self):
+    def test_ne(self) -> None:
+        """Test class inequality."""
         c1 = Cone(self.ZERO, "yellow")
         c2 = Cone(self.ZERO, "blue")
         c3 = Cone(self.ZERO, "orange")
@@ -69,7 +80,8 @@ class TestCone:
         assert c2 != c4
         assert c3 != c4
 
-    def test_plot(self):
+    def test_plot(self) -> None:
+        """Test plot method."""
         c1 = Cone(self.ZERO, "yellow")
         c2 = Cone(self.ZERO, "blue")
         c3 = Cone(self.ZERO, "orange")
@@ -89,6 +101,7 @@ class TestCone:
 
 
 class TestConeArray:
+    """Testing suite for the ConeArray class."""
 
     ZERO = Coordinate(0, 0)
     C1 = Cone(Coordinate(0, 0), "yellow")
@@ -96,7 +109,8 @@ class TestConeArray:
     C3 = Cone(Coordinate(0, 0), "orange")
     C4 = Cone(Coordinate(0, 0), "orange-big")
 
-    def test_instance(self):
+    def test_instance(self) -> None:
+        """Test class instantiation."""
         # Empty initialization:
         ConeArray()
 
@@ -106,7 +120,8 @@ class TestConeArray:
         # Multiple initialization:
         ConeArray(self.C1, self.C1)
 
-    def test_access(self):
+    def test_access(self) -> None:
+        """Test class attributes."""
         ca1 = ConeArray(self.C1)
         ca2 = ConeArray(self.C2)
         ca3 = ConeArray(self.C3)
@@ -124,7 +139,8 @@ class TestConeArray:
         assert ca3.type == "orange"
         assert ca4.type == "orange-big"
 
-    def test_append(self):
+    def test_append(self) -> None:
+        """Test appending method."""
         ca = ConeArray(self.C1)
 
         # Invalid `cone` data type:
@@ -140,7 +156,8 @@ class TestConeArray:
             ca.append(self.C3)
             ca.append(self.C4)
 
-    def test_extend(self):
+    def test_extend(self) -> None:
+        """Test extending method."""
         ca = ConeArray(self.C1)
 
         # Invalid `cone` data type:
@@ -156,7 +173,34 @@ class TestConeArray:
             ca.extend([self.C3])
             ca.extend([self.C4])
 
-    def test_plot(self):
+    def test_eq(self) -> None:
+        """Test class equality."""
+        ca1 = ConeArray(self.C1)
+        ca2 = ConeArray(self.C2)
+        ca3 = ConeArray(self.C3)
+        ca4 = ConeArray(self.C4)
+
+        assert ca1 == ca1
+        assert ca2 == ca2
+        assert ca3 == ca3
+        assert ca4 == ca4
+
+    def test_ne(self) -> None:
+        """Test class inequality."""
+        ca1 = ConeArray(self.C1)
+        ca2 = ConeArray(self.C2)
+        ca3 = ConeArray(self.C3)
+        ca4 = ConeArray(self.C4)
+
+        assert ca1 != ca2
+        assert ca1 != ca3
+        assert ca1 != ca4
+        assert ca2 != ca3
+        assert ca2 != ca4
+        assert ca3 != ca4
+
+    def test_plot(self) -> None:
+        """Test plot method."""
         # Detail off:
         ConeArray(self.C1).plot(detail=False)
         ConeArray(self.C2).plot(detail=False)
