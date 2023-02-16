@@ -339,6 +339,42 @@ class ConeArray(Sequence):
         for cone in self.cones:
             cone.plot(ax=ax, detail=detail)
 
+    def __eq__(self, other: object) -> bool:
+        """Check if the cone array is equal to another object.
+
+        Args:
+            other (object): other object to check equality with.
+
+        Returns:
+            bool: whether the cone array is equal to the other object.
+
+        Raises:
+            TypeError: if `other` is not a `ConeArray` instance.
+        """
+        if not isinstance(other, ConeArray):
+            raise TypeError("can only compare ConeArray instances")
+
+        return set(self._cones) == set(other._cones)
+
+    def __ne__(self, other: object) -> bool:
+        """Check if the cone array is not equal to another object.
+
+        Args:
+            other (object): other object to check inequality with.
+
+        Returns:
+            bool: whether the cone array is not equal to the other object.
+        """
+        return not self.__eq__(other)
+
+    def __hash__(self) -> int:
+        """Get the hash of the cone array.
+
+        Returns:
+            int: hash of the cone array.
+        """
+        return hash(tuple(self._cones))
+
     def __getitem__(self, index: Union[int, slice]) -> Any:
         """Get a cone from the array via index or slice.
 
