@@ -107,8 +107,9 @@ class Cone:
 
         elif value not in CONES:
             raise ValueError(
-                f"value must be one of the following types: "
-                f"{CONES.values()}"
+                "value must be one of the following types: "
+                + ', '.join(f"\"{key}\"" for key in list(CONES.keys())[:-1])
+                + f" or \"{list(CONES.keys())[-1]}\""
             )
 
         self._type = value
