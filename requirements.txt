@@ -1,5 +1,5 @@
 autopep8
-bidimensional
+bidimensional>=1.9.0
 build
 flake8
 matplotlib
