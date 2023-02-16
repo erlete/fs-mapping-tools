@@ -7,6 +7,7 @@ Author:
 from typing import Tuple
 
 import matplotlib
+import numpy as np
 from bidimensional import Coordinate
 from matplotlib import pyplot as plt
 
@@ -177,18 +178,55 @@ class Cone:
 
 
 class ConeArray:
+    """Cone array representation class.
+
+    This class is used to represent an ordered group of cones. It supports any
+    of the four types of cones defined in the FS rules: "yellow", "orange",
+    "orange-big" and "blue", but all cones must be of the same type.
+
+    Attributes:
+        cones (Tuple[Cone]): tuple of cones in the array.
+        type (str): type of cones in the array. Must be one of the following:
+            "yellow", "orange", "orange-big" or "blue".
+    """
 
     def __init__(self, *cones: Cone) -> None:
+        """Initialize a cone array instance.
+
+        Args:
+            cones (Cone): cones in the array. Must be of the same type.
+        """
         self.cones = cones
 
     @property
-    def cones(self) -> Tuple[Cone]:
+    def cones(self) -> Tuple[Cone, ...]:
+        """Get the cones in the array.
+
+        Returns:
+            Tuple[Cone, ...]: tuple of cones in the array.
+        """
         return self._cones
 
     @cones.setter
     def cones(self, cones: Tuple[Cone]) -> None:
+        """Set the cones in the array.
+
+        Args:
+            cones (Tuple[Cone]): tuple of cones in the array. Must be of the
+                same type.
+
+        Raises:
+            TypeError: if `cones` is not an iterable sequence.
+            TypeError: if any element in `cones` is not a `Cone` instance.
+            ValueError: if `cones` is not of the same type.
+        """
+        if not isinstance(cones, (tuple, list, set, np.ndarray)):
+            raise TypeError("cones must be an iterable sequence")
+
         if not all(isinstance(cone, Cone) for cone in cones):
-            raise TypeError("cones must be a list of Cone instances")
+            raise TypeError(
+                "all elements in the iterable sequence must be Cone instances"
+            )
 
         if len(set(cone.type for cone in cones)) > 1:
             raise ValueError("all cones must be of the same type")
@@ -197,4 +235,9 @@ class ConeArray:
 
     @property
     def type(self) -> str:
+        """Get the type of cones in the array.
+
+        Returns:
+            str: type of cones in the array.
+        """
         return self.cones[0].type
