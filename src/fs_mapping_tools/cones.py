@@ -160,6 +160,39 @@ class Cone:
                 marker='o', ms=CONES[self.type]["size"]["top"] / 2
             )
 
+    def __eq__(self, other: object) -> bool:
+        """Check if two cones are equal.
+
+        Args:
+            other (object): the other cone to compare with.
+
+        Returns:
+            bool: whether the two cones are equal.
+        """
+        if not isinstance(other, Cone):
+            raise TypeError("can only compare Cone instances")
+
+        return self.position == other.position and self.type == other.type
+
+    def __ne__(self, other: object) -> bool:
+        """Check if two cones are not equal.
+
+        Args:
+            other (object): the other cone to compare with.
+
+        Returns:
+            bool: whether the two cones are not equal.
+        """
+        return not self.__eq__(other)
+
+    def __hash__(self) -> int:
+        """Get the hash of the cone.
+
+        Returns:
+            int: hash of the cone.
+        """
+        return hash((self.position, self.type))
+
     def __repr__(self) -> str:
         """Get the raw representation of the cone.
 
