@@ -4,6 +4,8 @@ Author:
     Paulo Sanchez (@erlete)
 """
 
+from typing import Tuple
+
 import matplotlib
 from bidimensional import Coordinate
 from matplotlib import pyplot as plt
@@ -172,3 +174,27 @@ class Cone:
             str: string representation of the cone.
         """
         return f"Cone({self.position.x}, {self.position.y}, {self.type})"
+
+
+class ConeArray:
+
+    def __init__(self, *cones: Cone) -> None:
+        self.cones = cones
+
+    @property
+    def cones(self) -> Tuple[Cone]:
+        return self._cones
+
+    @cones.setter
+    def cones(self, cones: Tuple[Cone]) -> None:
+        if not all(isinstance(cone, Cone) for cone in cones):
+            raise TypeError("cones must be a list of Cone instances")
+
+        if len(set(cone.type for cone in cones)) > 1:
+            raise ValueError("all cones must be of the same type")
+
+        self._cones = cones
+
+    @property
+    def type(self) -> str:
+        return self.cones[0].type
