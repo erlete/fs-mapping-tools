@@ -5,6 +5,10 @@ on:
     branches:
       - dev
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   setup-and-test:
     runs-on: ubuntu-latest
@@ -38,16 +42,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Manually checkout repository
-        run: |
-          git config --global user.email "dev.szblzpaulo@gmail.com"
-          git config --global user.name "Paulo Sanchez"
-          git config --global credential.helper cache
-
-          git clone https://${{ secrets.ACCESS_TOKEN }}@github.com/erlete/fs-mapping-tools
-          cd fs-mapping-tools
-          git checkout dev
-          git fetch && git pull
+      - name: Checkout repository
+        uses: actions/checkout@v3.3.0
 
       - name: Set up Python
         uses: actions/setup-python@v4.5.0
@@ -64,12 +60,9 @@ jobs:
         run: |
           [[ -d reports/data ]] && rm -r reports/data/*
           mkdir -p reports/data/tests
-
           pytest --no-header --no-summary -qq --cov=src --cov-report=xml:reports/data/coverage-report.xml --cov-report=html:reports/data/coverage --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
-
           flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
           flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
-
           [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
 
       - name: Generate report badges
@@ -78,8 +71,14 @@ jobs:
           genbadge coverage -i reports/data/coverage-report.xml -o reports/badges/coverage.svg
           genbadge flake8 -i reports/data/linter-report.txt -o reports/badges/linter.svg
 
+      - name: Config git
+        run: |
+          git config --local user.email "dev.szblzpaulo@gmail.com"
+          git config --local user.name "Paulo Sanchez"
+
       - name: Commit and push reports
         run: |
+          git checkout main
           git add .
           git commit -am "Update reports"
-          git push --force
+          git push --force --repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/erlete/tests
