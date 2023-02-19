@@ -387,7 +387,7 @@ class ConeArray(Sequence):
         Raises:
             TypeError: if `index` is not an integer or slice.
         """
-        if not isinstance(index, int):
+        if not isinstance(index, (int, slice)):
             raise TypeError("index must be an integer or slice")
 
         return self._cones[index]
@@ -405,7 +405,7 @@ class ConeArray(Sequence):
             ValueError: if `cone` is not of the same type as the cones in the
                 array.
         """
-        if not isinstance(index, int):
+        if not isinstance(index, (int, slice)):
             raise TypeError("index must be an integer or slice")
 
         if not isinstance(cone, Cone):
@@ -431,7 +431,10 @@ class ConeArray(Sequence):
         Returns:
             str: raw representation of the cone array.
         """
-        return f"ConeArray({len(self._cones)} cones)"
+        return (
+            f"ConeArray({len(self._cones)} {self.type} cone"
+            f"{'s' if len(self._cones) > 1 else ''})"
+        )
 
     def __str__(self) -> str:
         """Get the string representation of the cone array.
@@ -441,6 +444,6 @@ class ConeArray(Sequence):
         """
         return (
             "ConeArray(\n    "
-            + '\n    '.join(str(cone) for cone in self._cones)
+            + ',\n    '.join(str(cone) for cone in self._cones)
             + "\n)"
         )
