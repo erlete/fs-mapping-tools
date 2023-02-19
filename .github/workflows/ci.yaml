@@ -47,6 +47,7 @@ jobs:
           git clone https://${{ secrets.ACCESS_TOKEN }}@github.com/erlete/fs-mapping-tools
           cd fs-mapping-tools
           git checkout dev
+          git fetch && git pull
 
       - name: Set up Python
         uses: actions/setup-python@v4.5.0
