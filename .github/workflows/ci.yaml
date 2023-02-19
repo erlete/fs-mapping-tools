@@ -38,8 +38,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3.3.0
+      - name: Manually checkout repository
+        run: |
+          git config --global user.email "dev.szblzpaulo@gmail.com"
+          git config --global user.name "Paulo Sanchez"
+          git config --global credential.helper cache
+
+          git clone https://${{ secrets.ACCESS_TOKEN }}@github.com/erlete/fs-mapping-tools
+          git checkout dev
 
       - name: Set up Python
         uses: actions/setup-python@v4.5.0
@@ -71,16 +77,7 @@ jobs:
           genbadge flake8 -i reports/data/linter-report.txt -o reports/badges/linter.svg
 
       - name: Commit and push reports
-        uses: EndBug/add-and-commit@v9.1.1
-        with:
-          add: '.'
-          author_name: Paulo Sanchez
-          author_email: dev.szblzpaulo@gmail.com
-          commit: --signoff
-          cwd: '.'
-          default_author: github_actor
-          fetch: false
-          message: 'Update reports'
-          pathspec_error_handling: ignore
-          push: true
-          tag_push: '--force'
+        run: |
+          git add .
+          git commit -am "Update reports"
+          git push --force
