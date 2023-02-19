@@ -10,7 +10,7 @@ Welcome to Formula Student Mapping Tools's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   modules
 
 Indices and tables
 ==================
