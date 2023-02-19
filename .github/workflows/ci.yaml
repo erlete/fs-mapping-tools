@@ -45,6 +45,7 @@ jobs:
           git config --global credential.helper cache
 
           git clone https://${{ secrets.ACCESS_TOKEN }}@github.com/erlete/fs-mapping-tools
+          cd fs-mapping-tools
           git checkout dev
 
       - name: Set up Python
