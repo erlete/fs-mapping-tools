@@ -54,15 +54,15 @@ jobs:
 
       - name: Run pytest and flake8
         run: |
-          rm -r reports/data/*
-          mkdir reports/data/tests
+          [[ -d reports/data ]] && rm -r reports/data/*
+          mkdir -p reports/data/tests
 
           pytest --no-header --no-summary -qq --cov=src --cov-report=xml:reports/data/coverage-report.xml --cov-report=html:reports/data/coverage --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
 
           flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
           flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
 
-          rm reports/data/coverage/.gitignore
+          [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
 
       - name: Generate report badges
         run: |
@@ -72,12 +72,12 @@ jobs:
 
       - name: Configure git
         run: |
-          git config user.name erlete
-          git config user.email dev.szblzpaulo@gmail.com
+          git config --local user.name "Paulo Sanchez"
+          git config --local user.email "dev.szblzpaulo@gmail.com"
 
       - name: Commit and push reports
         run: |
           git add reports/data
           git add reports/badges
-          git commit -m "Update report data"
+          git commit -am "Update report data"
           git push --force
