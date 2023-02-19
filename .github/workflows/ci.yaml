@@ -81,4 +81,4 @@ jobs:
           git checkout dev
           git add .
           git commit -am "Update reports"
-          git push --force --repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/erlete/tests
+          git push --force --repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/erlete/fs-mapping-tools
