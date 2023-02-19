@@ -1,3 +1,3 @@
 # Formula Student Mapping Tools
 
-[![Tests](./reports/badges/tests.svg)](./data/tests/index.html) [![Coverage](./reports/badges/coverage.svg)](./data/coverage/index.html) [![Linter](./reports/badges/linter.svg)](./data/linter/index.html)
+[![Tests](./reports/badges/tests.svg)](http://htmlpreview.github.io/?https://github.com/erlete/fs-mapping-tools/blob/dev/reports/data/tests/index.html) [![Coverage](./reports/badges/coverage.svg)](http://htmlpreview.github.io/?https://github.com/erlete/fs-mapping-tools/blob/dev/reports/data/coverage/index.html) [![Linter](./reports/badges/linter.svg)](http://htmlpreview.github.io/?https://github.com/erlete/fs-mapping-tools/blob/dev/reports/data/linter/index.html)
