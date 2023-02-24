@@ -67,9 +67,8 @@ jobs:
 
       - name: Run flake8
         run: |
-            flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
-            flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
-            [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
+          python -m flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
+          python -m flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
 
       - name: Generate report badges
         run: |
