@@ -62,7 +62,8 @@ jobs:
         run: |
           [[ -d reports/data ]] && rm -r reports/data/*
           mkdir -p reports/data/tests
-          pytest --no-header --no-summary -qq --cov=src --cov-report=term-missing --cov-report=lcov --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml ./tests
+          pytest -qq --cov=src --cov-report=term-missing --cov-report=lcov tests
+          pytest --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
           flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
           flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
           [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
