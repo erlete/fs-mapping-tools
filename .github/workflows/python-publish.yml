@@ -2,9 +2,9 @@ name: PyPI release
 
 on:
   workflow_run:
-    workflows: [Python Test Execution]
-    types:
-      - completed
+    workflows: [ "Python Test Execution" ]
+    branches: [ "stable" ]
+    types: [ "completed" ]
 
 jobs:
 
