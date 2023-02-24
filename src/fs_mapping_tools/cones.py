@@ -7,7 +7,6 @@ Author:
 from typing import Any, List, Sequence, Union
 
 import matplotlib
-import numpy as np
 from bidimensional import Coordinate
 from matplotlib import pyplot as plt
 
@@ -39,6 +38,8 @@ class Cone:
                 "orange", "orange-big" or "blue".
         """
         self.position = position
+        self._x = position[0]
+        self._y = position[1]
         self.type = type
 
     @property
@@ -253,8 +254,8 @@ class ConeArray(Sequence):
             TypeError: if any element in `cones` is not a `Cone` instance.
             ValueError: if `cones` is not of the same type.
         """
-        if not isinstance(cones, (tuple, list, set, np.ndarray)):
-            raise TypeError("cones must be an iterable sequence")
+        if not isinstance(cones, (tuple, list, set)):
+            raise TypeError("cones must be a tuple, list or set")
 
         if not all(isinstance(cone, Cone) for cone in cones):
             raise TypeError(
@@ -303,14 +304,14 @@ class ConeArray(Sequence):
             cones (List[Cone]): list of cones to extend the array with.
 
         Raises:
-            TypeError: if `cones` is not an iterable sequence.
+            TypeError: if `cones` is not a tuple, list or set.
             TypeError: if any element in `cones` is not a `Cone` instance.
             ValueError: if `cones` contains mixed types of cones.
             ValueError: if `cones` is not of the same type as the cones in the
                 array.
         """
-        if not isinstance(cones, (tuple, list, set, np.ndarray)):
-            raise TypeError("cones must be an iterable sequence")
+        if not isinstance(cones, (tuple, list, set)):
+            raise TypeError("cones must be a tuple, list or set")
 
         if not all(isinstance(cone, Cone) for cone in cones):
             raise TypeError(
@@ -387,7 +388,7 @@ class ConeArray(Sequence):
         Raises:
             TypeError: if `index` is not an integer or slice.
         """
-        if not isinstance(index, int):
+        if not isinstance(index, (int, slice)):
             raise TypeError("index must be an integer or slice")
 
         return self._cones[index]
@@ -405,7 +406,7 @@ class ConeArray(Sequence):
             ValueError: if `cone` is not of the same type as the cones in the
                 array.
         """
-        if not isinstance(index, int):
+        if not isinstance(index, (int, slice)):
             raise TypeError("index must be an integer or slice")
 
         if not isinstance(cone, Cone):
@@ -431,7 +432,10 @@ class ConeArray(Sequence):
         Returns:
             str: raw representation of the cone array.
         """
-        return f"ConeArray({len(self._cones)} cones)"
+        return (
+            f"ConeArray({len(self._cones)} {self.type} cone"
+            f"{'s' if len(self._cones) > 1 else ''})"
+        )
 
     def __str__(self) -> str:
         """Get the string representation of the cone array.
@@ -441,6 +445,6 @@ class ConeArray(Sequence):
         """
         return (
             "ConeArray(\n    "
-            + '\n    '.join(str(cone) for cone in self._cones)
+            + ',\n    '.join(str(cone) for cone in self._cones)
             + "\n)"
         )
