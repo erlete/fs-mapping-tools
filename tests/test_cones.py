@@ -4,7 +4,6 @@ Author:
     Paulo Sanchez (@erlete)
 """
 
-import numpy as np
 import pytest
 from bidimensional import Coordinate
 
@@ -207,8 +206,6 @@ class TestConeArray:
         ca.cones = (self.C1, self.C1)
         ca.cones = {self.C1}
         ca.cones = {self.C1, self.C1}
-        ca.cones = np.array([self.C1])
-        ca.cones = np.array([self.C1, self.C1])
 
         with pytest.raises(TypeError):
             ca.cones = [self.C1, 1]

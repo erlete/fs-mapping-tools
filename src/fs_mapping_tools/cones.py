@@ -39,6 +39,8 @@ class Cone:
                 "orange", "orange-big" or "blue".
         """
         self.position = position
+        self._x = position[0]
+        self._y = position[1]
         self.type = type
 
     @property
@@ -253,8 +255,8 @@ class ConeArray(Sequence):
             TypeError: if any element in `cones` is not a `Cone` instance.
             ValueError: if `cones` is not of the same type.
         """
-        if not isinstance(cones, (tuple, list, set, np.ndarray)):
-            raise TypeError("cones must be an iterable sequence")
+        if not isinstance(cones, (tuple, list, set)):
+            raise TypeError("cones must be a tuple, list or set")
 
         if not all(isinstance(cone, Cone) for cone in cones):
             raise TypeError(
@@ -303,14 +305,14 @@ class ConeArray(Sequence):
             cones (List[Cone]): list of cones to extend the array with.
 
         Raises:
-            TypeError: if `cones` is not an iterable sequence.
+            TypeError: if `cones` is not a tuple, list or set.
             TypeError: if any element in `cones` is not a `Cone` instance.
             ValueError: if `cones` contains mixed types of cones.
             ValueError: if `cones` is not of the same type as the cones in the
                 array.
         """
-        if not isinstance(cones, (tuple, list, set, np.ndarray)):
-            raise TypeError("cones must be an iterable sequence")
+        if not isinstance(cones, (tuple, list, set)):
+            raise TypeError("cones must be a tuple, list or set")
 
         if not all(isinstance(cone, Cone) for cone in cones):
             raise TypeError(
