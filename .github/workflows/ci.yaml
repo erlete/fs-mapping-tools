@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - stable
+      - dev
 
 permissions:
   contents: write
@@ -88,7 +89,6 @@ jobs:
 
       - name: Commit and push reports
         run: |
-          git checkout stable
           git add .
           git commit -am "Update reports"
           git push --force --repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/erlete/fs-mapping-tools
