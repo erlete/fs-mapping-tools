@@ -60,7 +60,7 @@ jobs:
         run: |
           [[ -d reports/data ]] && rm -r reports/data/*
           mkdir -p reports/data/tests
-          pytest --no-header --no-summary -qq --cov=src --cov-report=xml:reports/data/coverage-report.xml --cov-report=html:reports/data/coverage --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
+          pytest --no-header --no-summary -qq --cov=src --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
           flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
           flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
           [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
@@ -68,7 +68,6 @@ jobs:
       - name: Generate report badges
         run: |
           genbadge tests -i reports/data/tests-report.xml -o reports/badges/tests.svg
-          genbadge coverage -i reports/data/coverage-report.xml -o reports/badges/coverage.svg
           genbadge flake8 -i reports/data/linter-report.txt -o reports/badges/linter.svg
 
       - name: Config git
