@@ -1,0 +1,40 @@
+name: Coverage Report
+
+on: ["pull_request"]
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+
+      - name: Install and activate virtual environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install virtualenv
+          python -m virtualenv .venv
+          source .venv/bin/activate
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pytest pytest-cov
+          if [ -f requirements.txt ]; then
+            python -m pip install -Ur requirements.txt
+          fi
+
+      - name: Install package from local source
+        run: python -m pip install -e .
+
+      - name: Test with PyTest and generate report
+        run: python -m pytest --cov=src --cov-report=term-missing --cov-report=lcov tests/
+
+      - name: Coveralls report
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
