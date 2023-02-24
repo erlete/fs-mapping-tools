@@ -64,9 +64,12 @@ jobs:
           mkdir -p reports/data/tests
           pytest -qq --cov=src --cov-report=term-missing --cov-report=lcov tests
           pytest --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
-          flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
-          flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
-          [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
+
+      - name: Run flake8
+        run: |
+            flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
+            flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
+            [[ -f reports/data/coverage/.gitignore ]] && rm reports/data/coverage/.gitignore
 
       - name: Generate report badges
         run: |
