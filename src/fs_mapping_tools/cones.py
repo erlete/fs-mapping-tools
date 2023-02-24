@@ -7,7 +7,6 @@ Author:
 from typing import Any, List, Sequence, Union
 
 import matplotlib
-import numpy as np
 from bidimensional import Coordinate
 from matplotlib import pyplot as plt
 
