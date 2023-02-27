@@ -10,7 +10,7 @@ import matplotlib
 from bidimensional import Coordinate
 from matplotlib import pyplot as plt
 
-from .config import CONES
+from ..config import CONES
 
 
 class Cone:
