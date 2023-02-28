@@ -30,6 +30,11 @@ class CarState:
         torque (float): torque of the engine [Nm].
     """
 
+    __slots__ = (
+        "position", "orientation", "steering", "speed", "acceleration",
+        "torque"
+    )
+
     def __init__(self, position: Coordinate, orientation: float,
                  steering: float, speed: float, acceleration: float,
                  torque: float) -> None:
