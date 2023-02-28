@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 from bidimensional import Coordinate
 
 from fs_mapping_tools.track.cones import Cone, ConeArray
-from fs_mapping_tools.vehicle.camera import Camera
+from fs_mapping_tools.vehicle.detection import Camera
 
 MODES: Dict[str, float] = {
     "x": 0.0,

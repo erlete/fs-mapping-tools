@@ -1,7 +1,7 @@
-"""Container module for camera representation classes.
+"""Container module for detection hardware representation classes.
 
 This module contains all definitions of classes and utilities used to represent
-a camera object on track.
+both camera and lidar objects on the vehicle.
 
 Authors:
     Paulo Sanchez (@erlete)
