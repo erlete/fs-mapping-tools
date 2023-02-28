@@ -8,7 +8,7 @@ Authors:
 """
 
 from math import cos, sin
-from typing import Any
+from typing import Any, List
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -42,11 +42,132 @@ class Camera:
             focal_angle (float): focal angle of the camera lens.
             focal_length (float): focal distance of the camera lens.
         """
+        self.__ready_to_detect = False
+
         self.position = position
         self.orientation = orientation
         self.focal_angle = focal_angle
         self.focal_length = focal_length
-        self.set_detection_area()
+
+        self.__ready_to_detect = True
+        self._set_detection_area()
+
+    @property
+    def position(self) -> Coordinate:
+        """Get the position of the camera.
+
+        Returns:
+            Coordinate: position of the camera.
+        """
+        return self._position
+
+    @position.setter
+    def position(self, value: Coordinate) -> None:
+        """Set the position of the camera.
+
+        Args:
+            value (Coordinate): new position of the camera.
+
+        Raises:
+            TypeError: if the value is not a Coordinate instance.
+        """
+        if not isinstance(value, Coordinate):
+            raise TypeError("value must be a Coordinate instance.")
+
+        self._position = value
+
+        if self.__ready_to_detect:
+            self._set_detection_area()
+
+    @property
+    def orientation(self) -> float:
+        """Get the orientation of the camera.
+
+        Returns:
+            float: orientation of the camera.
+        """
+        return self._orientation
+
+    @orientation.setter
+    def orientation(self, value: float) -> None:
+        """Set the orientation of the camera.
+
+        Args:
+            value (float): new orientation of the camera.
+
+        Raises:
+            TypeError: if the value is not a float.
+        """
+        if not isinstance(value, float):
+            raise TypeError("value must be a float.")
+
+        self._orientation = value
+
+        if self.__ready_to_detect:
+            self._set_detection_area()
+
+    @property
+    def focal_angle(self) -> float:
+        """Get the focal angle of the camera.
+
+        Returns:
+            float: focal angle of the camera.
+        """
+        return self._focal_angle
+
+    @focal_angle.setter
+    def focal_angle(self, value: float) -> None:
+        """Set the focal angle of the camera.
+
+        Args:
+            value (float): new focal angle of the camera.
+
+        Raises:
+            TypeError: if the value is not a float.
+        """
+        if not isinstance(value, float):
+            raise TypeError("value must be a float.")
+
+        self._focal_angle = value
+
+        if self.__ready_to_detect:
+            self._set_detection_area()
+
+    @property
+    def focal_length(self) -> float:
+        """Get the focal length of the camera.
+
+        Returns:
+            float: focal length of the camera.
+        """
+        return self._focal_length
+
+    @focal_length.setter
+    def focal_length(self, value: float) -> None:
+        """Set the focal length of the camera.
+
+        Args:
+            value (float): new focal length of the camera.
+
+        Raises:
+            TypeError: if the value is not a float.
+        """
+        if not isinstance(value, float):
+            raise TypeError("value must be a float.")
+
+        self._focal_length = value
+
+        if self.__ready_to_detect:
+            self._set_detection_area()
+
+    @property
+    def detected(self) -> List[ConeArray]:
+        """Get the detected cone arrays.
+
+        Returns:
+            List[ConeArray]: detected cone arrays.
+        """
+        return self._detected
 
     def detect(self, *cone_arrays) -> None:
         """Detect cones inside provided cone arrays.
@@ -62,12 +183,12 @@ class Camera:
             TypeError: if any of the cone arrays is not a ConeArray type.
         """
         if not cone_arrays:
-            self.detected = []
+            self._detected = []
         else:
             if not any(isinstance(array, ConeArray) for array in cone_arrays):
                 raise TypeError("all cone arrays must be ConeArray types")
 
-            self.detected = [
+            self._detected = [
                 ConeArray(
                     *[
                         cone for cone in array
@@ -76,31 +197,31 @@ class Camera:
                 ) for array in cone_arrays
             ]
 
-    def set_detection_area(self) -> None:
+    def _set_detection_area(self) -> None:
         """Determine the detection area of the camera.
 
         This method determines the detection area of the camera, which is
         represented by a combination of triangles.
         """
-        left_rot = self.orientation - self.focal_angle / 2
-        right_rot = self.orientation + self.focal_angle / 2
+        left_rot = self._orientation - self._focal_angle / 2
+        right_rot = self._orientation + self._focal_angle / 2
 
-        radius = self.position + Coordinate(
-            cos(self.orientation) * self.focal_length,
-            sin(self.orientation) * self.focal_length
+        radius = self._position + Coordinate(
+            cos(self._orientation) * self._focal_length,
+            sin(self._orientation) * self._focal_length
         )
-        left_boundary = self.position + Coordinate(
-            cos(left_rot) * self.focal_length,
-            sin(left_rot) * self.focal_length
+        left_boundary = self._position + Coordinate(
+            cos(left_rot) * self._focal_length,
+            sin(left_rot) * self._focal_length
         )
-        right_boundary = self.position + Coordinate(
-            cos(right_rot) * self.focal_length,
-            sin(right_rot) * self.focal_length
+        right_boundary = self._position + Coordinate(
+            cos(right_rot) * self._focal_length,
+            sin(right_rot) * self._focal_length
         )
 
-        self.detection_area = (
+        self._detection_area = (
             Triangle(
-                self.position,
+                self._position,
                 left_boundary,
                 right_boundary
             ), Triangle(
@@ -119,10 +240,10 @@ class Camera:
         """
         ax = ax if ax is not None else plt.gca()
 
-        for triangle in self.detection_area:
+        for triangle in self._detection_area:
             triangle.plot(ax=ax, annotate=False)
 
-        self.position.plot(ax=ax, annotate=False)
+        self._position.plot(ax=ax, annotate=False)
 
     def __contains__(self, element: Any):
         """Determine whether an element is within the detection area.
@@ -142,7 +263,7 @@ class Camera:
 
         return any(
             element.position in triangle
-            for triangle in self.detection_area
+            for triangle in self._detection_area
         )
 
     def __repr__(self) -> str:
@@ -152,10 +273,10 @@ class Camera:
             str: raw representation of the Camera instance.
         """
         return (
-            f"Camera(x: {self.position.x}, y: {self.position.y}, "
-            + f"orientation: {self.orientation}, "
-            + f"focal_angle: {self.focal_angle}, "
-            + f"focal_length: {self.focal_length})"
+            f"Camera(x: {self._position.x}, y: {self._position.y}, "
+            + f"orientation: {self._orientation}, "
+            + f"focal_angle: {self._focal_angle}, "
+            + f"focal_length: {self._focal_length})"
         )
 
     def __str__(self) -> str:
@@ -164,13 +285,13 @@ class Camera:
         Returns:
             str: string representation of the Camera instance.
         """
-        detected = "\n        ".join(repr(array) for array in self.detected)
+        detected = "\n        ".join(repr(array) for array in self._detected)
         return f"""Camera(
-    x: {self.position.x},
-    y: {self.position.y},
-    orientation: {self.orientation},
-    focal_angle: {self.focal_angle},
-    focal_length: {self.focal_length},
+    x: {self._position.x},
+    y: {self._position.y},
+    orientation: {self._orientation},
+    focal_angle: {self._focal_angle},
+    focal_length: {self._focal_length},
     detected: (
         {detected}
     )
