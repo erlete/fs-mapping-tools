@@ -144,3 +144,13 @@ class Camera:
             element.position in triangle
             for triangle in self.detection_area
         )
+
+
+class Lidar:
+    """LIDAR representation class.
+
+    This class represents a LIDAR element, yet to be implemented. The class is
+    temporarily used as a placeholder for future implementations.
+    """
+
+    pass
