@@ -32,6 +32,11 @@ class Camera:
         focal_length (float): focal distance of the camera lens.
     """
 
+    __slots__ = (
+        "_position", "_orientation", "_focal_angle", "_focal_length",
+        "_detected", "_detection_area", "__ready_to_detect"
+    )
+
     def __init__(self, position: Coordinate, orientation: float,
                  focal_angle: float, focal_length: float):
         """Initialize a Camera instance.
