@@ -8,9 +8,11 @@ Authors:
 """
 
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from bidimensional import Coordinate
+
+from ..vehicle.detection import Camera, Lidar
 
 
 class CarState:
@@ -20,7 +22,7 @@ class CarState:
     track run.
 
     Attributes:
-        position (Coordinate): position of the car.
+        position (Coordinate): position of the car (x [m], y [m]).
         orientation (float): orientation of the car (front view) [rad].
         steering (float): steering of the front wheels of the car [rad].
         speed (float): speed of the car [m/s].
@@ -34,7 +36,7 @@ class CarState:
         """Initialize a CarState instance.
 
         Args:
-            position (Coordinate): position of the car.
+            position (Coordinate): position of the car (x [m], y [m]).
             orientation (float): orientation of the car (front view) [rad].
             steering (float): steering of the front wheels of the car [rad].
             speed (float): speed of the car [m/s].
@@ -73,19 +75,29 @@ class Car:
 
     This class represent the car element, which is composed of a structure
     (static properties, time-independent) and a state (dynamic properties,
-    time-dependent).
+    time-dependent). It also includes the detection hardware of the car, such
+    as the camera and/or the lidar.
 
     Attributes:
         state (CarState): state of the car at a given instant.
         structure (CarStructure): structure of the car.
+        camera (Camera, optional): camera of the car.
+        lidar (Lidar, optional): lidar of the car.
     """
 
-    def __init__(self, state: CarState, structure: CarStructure) -> None:
+    def __init__(
+        self, state: CarState, structure: CarStructure,
+        camera: Optional[Camera] = None, lidar: Optional[Lidar] = None
+    ) -> None:
         """Initialize a Car instance.
 
         Args:
             state (CarState): state of the car at a given instant.
             structure (CarStructure): structure of the car.
+            camera (Camera, optional): camera of the car.
+            lidar (Lidar, optional): lidar of the car.
         """
         self.state = state
         self.structure = structure
+        self.camera = camera
+        self.lidar = lidar
