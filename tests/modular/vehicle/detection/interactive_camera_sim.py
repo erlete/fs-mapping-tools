@@ -98,7 +98,7 @@ def on_press(event: matplotlib.backend_bases.Event) -> None:
 
 # Data reading:
 with open(
-    "tests/modular/vehicle/camera/interactive_sim.json",
+    "tests/modular/vehicle/detection/interactive_camera_sim.json",
     mode='r',
     encoding="utf-8"
 ) as f:
