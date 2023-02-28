@@ -7,7 +7,7 @@ Authors:
     Paulo Sanchez (@erlete)
 """
 
-from math import cos, pi, sin
+from math import cos, sin
 from typing import Any
 
 import matplotlib
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from bidimensional import Coordinate
 from bidimensional.polygons import Triangle
 
-from ..track.cones import Cone
+from ..track.cones import Cone, ConeArray
 
 
 class Camera:
@@ -47,6 +47,34 @@ class Camera:
         self.focal_angle = focal_angle
         self.focal_length = focal_length
         self.set_detection_area()
+
+    def detect(self, *cone_arrays) -> None:
+        """Detect cones inside provided cone arrays.
+
+        This method is used to determine which cones of all provided arrays are
+        located inside the detection range.
+
+        Args:
+            *cone_arrays (ConeArray, optional): the cone array(s) to detect
+                cones from.
+
+        Raises:
+            TypeError: if any of the cone arrays is not a ConeArray type.
+        """
+        if not cone_arrays:
+            self.detected = []
+        else:
+            if not any(isinstance(array, ConeArray) for array in cone_arrays):
+                raise TypeError("all cone arrays must be ConeArray types")
+
+            self.detected = [
+                ConeArray(
+                    *[
+                        cone for cone in array
+                        if cone in self
+                    ]
+                ) for array in cone_arrays
+            ]
 
     def set_detection_area(self) -> None:
         """Determine the detection area of the camera.
