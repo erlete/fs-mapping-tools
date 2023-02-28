@@ -54,7 +54,6 @@ class Camera:
         This method determines the detection area of the camera, which is
         represented by a combination of triangles.
         """
-
         left_rot = self.orientation - self.focal_angle / 2
         right_rot = self.orientation + self.focal_angle / 2
 
@@ -110,13 +109,10 @@ class Camera:
         Raises:
             TypeError: if the element is not a Coordinate or Cone instance.
         """
-        if not isinstance(element, (Coordinate, Cone)):
-            raise TypeError("element must be a Coordinate or Cone instance.")
+        if not isinstance(element, Cone):
+            raise TypeError("element must be a Cone instance.")
 
-        if isinstance(element, Coordinate):
-            return any(element in triangle for triangle in self.detection_area)
-        else:
-            return any(
-                element.position in triangle
-                for triangle in self.detection_area
-            )
+        return any(
+            element.position in triangle
+            for triangle in self.detection_area
+        )
