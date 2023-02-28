@@ -145,6 +145,37 @@ class Camera:
             for triangle in self.detection_area
         )
 
+    def __repr__(self) -> str:
+        """Get the raw representation of the Camera instance.
+
+        Returns:
+            str: raw representation of the Camera instance.
+        """
+        return (
+            f"Camera(x: {self.position.x}, y: {self.position.y}, "
+            + f"orientation: {self.orientation}, "
+            + f"focal_angle: {self.focal_angle}, "
+            + f"focal_length: {self.focal_length})"
+        )
+
+    def __str__(self) -> str:
+        """Get the string representation of the Camera instance.
+
+        Returns:
+            str: string representation of the Camera instance.
+        """
+        detected = "\n        ".join(repr(array) for array in self.detected)
+        return f"""Camera(
+    x: {self.position.x},
+    y: {self.position.y},
+    orientation: {self.orientation},
+    focal_angle: {self.focal_angle},
+    focal_length: {self.focal_length},
+    detected: (
+        {detected}
+    )
+)"""
+
 
 class Lidar:
     """LIDAR representation class.
