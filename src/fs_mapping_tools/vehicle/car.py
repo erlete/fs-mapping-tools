@@ -63,16 +63,115 @@ class CarStructure:
     relevant physical properties that it might include.
 
     Attributes:
-        TODO
+        back_to_wheel (float): distance from the car's back to the wheel's
+            center [m].
+        length (float): car length [m].
+        max_acceleration (float): maximum acceleration [m/s^2].
+        max_downsteering (float): maximum downsteering angle [rad].
+        max_speed (float): maximum speed [m/s].
+        max_steering (float): maximum steering angle [rad].
+        min_speed (float): minimum speed [m/s].
+        tread (float): distance between the wheels [m].
+        wheel_base (float): distance between the front and back wheels [m].
+        wheel_length (float): wheel length [m].
+        wheel_width (float): wheel width [m].
+        width (float): car width [m].
     """
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
+    __DEFAULTS = {
+        "back_to_wheel": 0.0,
+        "length": 0.0,
+        "max_acceleration": 0.0,
+        "max_downsteering": 0.0,
+        "max_speed": 0.0,
+        "max_steering": 0.0,
+        "min_speed": 0.0,
+        "tread": 0.0,
+        "wheel_base": 0.0,
+        "wheel_length": 0.0,
+        "wheel_width": 0.0,
+        "width": 0.0
+    }
+
+    __TYPES = {
+        "back_to_wheel": (int, float),
+        "length": (int, float),
+        "max_acceleration": (int, float),
+        "max_downsteering": (int, float),
+        "max_speed": (int, float),
+        "max_steering": (int, float),
+        "min_speed": (int, float),
+        "tread": (int, float),
+        "wheel_base": (int, float),
+        "wheel_length": (int, float),
+        "wheel_width": (int, float),
+        "width": (int, float)
+    }
+
+    def __init__(self, **kwargs):
         """Initialize a CarStructure instance.
 
         Args:
-            TODO
+            kwargs: dictionary of properties to be stored in the instance.
         """
-        self.structure = kwargs
+        self._dictionary = self.__DEFAULTS.copy()
+        self._dictionary.update(kwargs)
+
+        # Method redirection:
+        self.get = self._dictionary.get
+        self.clear = self._dictionary.clear
+        self.copy = self._dictionary.copy
+        self.fromkeys = self._dictionary.fromkeys
+        self.get = self._dictionary.get
+        self.items = self._dictionary.items
+        self.keys = self._dictionary.keys
+        self.pop = self._dictionary.pop
+        self.popitem = self._dictionary.popitem
+        self.setdefault = self._dictionary.setdefault
+        self.values = self._dictionary.values
+
+    def __getattr__(self, name: str):
+        """Get an attribute from the instance dictionary.
+
+        Args:
+            name (str): the name of the attribute.
+
+        Returns:
+            Any: the value of the attribute.
+        """
+        return self._dictionary.get(name)
+
+    def __setattr__(self, name: str, value: Any):
+        """Set an attribute in the instance dictionary.
+
+        Args:
+            name (str): the name of the attribute.
+            value (Any): the value of the attribute.
+        """
+        # Recursion error avoidance:
+        if name != "dictionary" and name not in self._dictionary.__dir__():
+
+            # Invalid attribute checking:
+            if name not in self._dictionary:
+                raise AttributeError(
+                    f"invalid attribute: \"{name}\". Possible values are: "
+                    + ', '.join(
+                        f"\"{key}\""
+                        for key in self._dictionary.keys()
+                    ) + '.'
+                )
+
+            # Invalid type checking:
+            if not isinstance(value, self.__TYPES[name]):
+                raise TypeError(
+                    f"invalid type for attribute {name}."
+                    f" Expected {self.__TYPES[name]}, got {type(value)}."
+                )
+
+            self._dictionary[name] = value
+
+        else:
+            self.__dict__[name] = value
 
 
 class Car:
