@@ -27,32 +27,32 @@ class Camera:
 
     Attributes:
         position (Coordinate): position of the center of the camera.
-        orientation (float): orientation of the camera lens.
-        focal_angle (float): focal angle of the camera lens.
-        focal_length (float): focal distance of the camera lens.
+        orientation (float): orientation of the camera.
+        fov (float): field of view of the camera.
+        detection_range (float): detection range of the camera.
     """
 
     __slots__ = (
-        "_position", "_orientation", "_focal_angle", "_focal_length",
+        "_position", "_orientation", "_fov", "_detection_range",
         "_detected", "_detection_area", "__ready_to_detect"
     )
 
     def __init__(self, position: Coordinate, orientation: float,
-                 focal_angle: float, focal_length: float):
+                 fov: float, detection_range: float):
         """Initialize a Camera instance.
 
         Args:
             position (Coordinate): position of the center of the camera.
-            orientation (float): orientation of the camera lens.
-            focal_angle (float): focal angle of the camera lens.
-            focal_length (float): focal distance of the camera lens.
+            orientation (float): orientation of the camera.
+            fov (float): field of view of the camera.
+            detection_range (float): detection range of the camera.
         """
         self.__ready_to_detect = False
 
         self.position = position
         self.orientation = orientation
-        self.focal_angle = focal_angle
-        self.focal_length = focal_length
+        self.fov = fov
+        self.detection_range = detection_range
 
         self.__ready_to_detect = True
         self._set_detection_area()
@@ -112,20 +112,20 @@ class Camera:
             self._set_detection_area()
 
     @property
-    def focal_angle(self) -> float:
-        """Get the focal angle of the camera.
+    def fov(self) -> float:
+        """field of viewfocal angle of the camera.
 
         Returns:
-            float: focal angle of the camera.
+            float: field of view of the camera.
         """
-        return self._focal_angle
+        return self._fov
 
-    @focal_angle.setter
-    def focal_angle(self, value: float) -> None:
-        """Set the focal angle of the camera.
+    @fov.setter
+    def fov(self, value: float) -> None:
+        """Set the field of view of the camera.
 
         Args:
-            value (float): new focal angle of the camera.
+            value (float): new field of view of the camera.
 
         Raises:
             TypeError: if the value is not a float.
@@ -133,26 +133,26 @@ class Camera:
         if not isinstance(value, float):
             raise TypeError("value must be a float.")
 
-        self._focal_angle = value
+        self._fov = value
 
         if self.__ready_to_detect:
             self._set_detection_area()
 
     @property
-    def focal_length(self) -> float:
-        """Get the focal length of the camera.
+    def detection_range(self) -> float:
+        """Get the detection range of the camera.
 
         Returns:
-            float: focal length of the camera.
+            float: detection range of the camera.
         """
-        return self._focal_length
+        return self._detection_range
 
-    @focal_length.setter
-    def focal_length(self, value: float) -> None:
-        """Set the focal length of the camera.
+    @detection_range.setter
+    def detection_range(self, value: float) -> None:
+        """Set the detection range of the camera.
 
         Args:
-            value (float): new focal length of the camera.
+            value (float): new detection range of the camera.
 
         Raises:
             TypeError: if the value is not a float.
@@ -160,7 +160,7 @@ class Camera:
         if not isinstance(value, float):
             raise TypeError("value must be a float.")
 
-        self._focal_length = value
+        self._detection_range = value
 
         if self.__ready_to_detect:
             self._set_detection_area()
@@ -208,20 +208,20 @@ class Camera:
         This method determines the detection area of the camera, which is
         represented by a combination of triangles.
         """
-        left_rot = self._orientation - self._focal_angle / 2
-        right_rot = self._orientation + self._focal_angle / 2
+        left_rot = self._orientation - self._fov / 2
+        right_rot = self._orientation + self._fov / 2
 
         radius = self._position + Coordinate(
-            cos(self._orientation) * self._focal_length,
-            sin(self._orientation) * self._focal_length
+            cos(self._orientation) * self._detection_range,
+            sin(self._orientation) * self._detection_range
         )
         left_boundary = self._position + Coordinate(
-            cos(left_rot) * self._focal_length,
-            sin(left_rot) * self._focal_length
+            cos(left_rot) * self._detection_range,
+            sin(left_rot) * self._detection_range
         )
         right_boundary = self._position + Coordinate(
-            cos(right_rot) * self._focal_length,
-            sin(right_rot) * self._focal_length
+            cos(right_rot) * self._detection_range,
+            sin(right_rot) * self._detection_range
         )
 
         self._detection_area = (
@@ -280,8 +280,8 @@ class Camera:
         return (
             f"Camera(x: {self._position.x}, y: {self._position.y}, "
             + f"orientation: {self._orientation}, "
-            + f"focal_angle: {self._focal_angle}, "
-            + f"focal_length: {self._focal_length})"
+            + f"fov: {self._fov}, "
+            + f"detection_range: {self._detection_range})"
         )
 
     def __str__(self) -> str:
@@ -295,8 +295,8 @@ class Camera:
     x: {self._position.x},
     y: {self._position.y},
     orientation: {self._orientation},
-    focal_angle: {self._focal_angle},
-    focal_length: {self._focal_length},
+    fov: {self._fov},
+    detection_range: {self._detection_range},
     detected: (
         {detected}
     )

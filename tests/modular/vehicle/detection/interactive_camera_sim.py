@@ -121,9 +121,9 @@ while True:
 
     camera = Camera(
         Coordinate(MODES["x"], MODES["y"]),
-        orientation=MODES["orientation"],
-        focal_angle=MODES["angle"],
-        focal_length=MODES["distance"]
+        MODES["orientation"],
+        MODES["angle"],
+        MODES["distance"]
     )
 
     line_1.plot()
@@ -136,12 +136,12 @@ while True:
             cone.position.plot(color="green")
 
     plt.xlim(
-        camera.position.x - (camera.focal_length + 5),
-        camera.position.x + (camera.focal_length + 5)
+        camera.position.x - (camera.detection_range + 5),
+        camera.position.x + (camera.detection_range + 5)
     )
     plt.ylim(
-        camera.position.y - (camera.focal_length + 5),
-        camera.position.y + (camera.focal_length + 5)
+        camera.position.y - (camera.detection_range + 5),
+        camera.position.y + (camera.detection_range + 5)
     )
     plt.grid(True)
     plt.axis("equal")
