@@ -8,7 +8,7 @@ Authors:
 """
 
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional, Tuple, Union
 
 from bidimensional import Coordinate
 
@@ -56,122 +56,86 @@ class CarState:
         self.torque = torque
 
 
+class Wheel:
+
+    __slots__ = ("diameter", "width")
+
+    def __init__(self, diameter: Union[int, float],
+                 width: Union[int, float]) -> None:
+        self.diameter = diameter
+        self.width = width
+
+
+class Axis:
+
+    __slots__ = ("left_wheel", "right_wheel", "steering_angle", "track")
+
+    def __init__(self, left_wheel: Wheel, right_wheel: Wheel,
+                 steering_angle: Union[int, float],
+                 track: Union[int, float]) -> None:
+        self.left_wheel = left_wheel
+        self.right_wheel = right_wheel
+        self.steering_angle = steering_angle
+        self.track = track
+
+
+class Direction:
+
+    __slots__ = ("front_axis", "rear_axis", "wheelbase")
+
+    def __init__(self, front_axis: Axis, rear_axis: Axis,
+                 wheelbase: Union[int, float]) -> None:
+        self.front_axis = front_axis
+        self.rear_axis = rear_axis
+        self.wheelbase = wheelbase
+
+
+class Engine:
+
+    __slots__ = ("acceleration", "speed", "torque")
+
+    def __init__(
+        self,
+        acceleration: Tuple[Union[int, float], Union[int, float]],
+        speed: Tuple[Union[int, float], Union[int, float]],
+        torque: Tuple[Union[int, float], Union[int, float]]
+    ) -> None:
+        self.acceleration = acceleration
+        self.speed = speed
+        self.torque = torque
+
+
 class CarStructure:
     """Car structure representation class.
 
     This class represent the static structure of the car, including all
-    relevant physical properties that it might include.
+    relevant physical properties that it might include. It also includes the
+    detection hardware of the car, such as the camera and/or the lidar.
 
     Attributes:
-        back_to_wheel (float): distance from the car's back to the wheel's
-            center [m].
-        length (float): car length [m].
-        max_acceleration (float): maximum acceleration [m/s^2].
-        max_downsteering (float): maximum downsteering angle [rad].
-        max_speed (float): maximum speed [m/s].
-        max_steering (float): maximum steering angle [rad].
-        min_speed (float): minimum speed [m/s].
-        tread (float): distance between the wheels [m].
-        wheel_base (float): distance between the front and back wheels [m].
-        wheel_length (float): wheel length [m].
-        wheel_width (float): wheel width [m].
-        width (float): car width [m].
+        engine (Engine): engine of the car.
+        direction (Direction): direction of the car.
+        camera (Camera, optional): camera of the car.
+        lidar (Lidar, optional): lidar of the car.
     """
 
-    __DEFAULTS = {
-        "back_to_wheel": 0.0,
-        "length": 0.0,
-        "max_acceleration": 0.0,
-        "max_downsteering": 0.0,
-        "max_speed": 0.0,
-        "max_steering": 0.0,
-        "min_speed": 0.0,
-        "tread": 0.0,
-        "wheel_base": 0.0,
-        "wheel_length": 0.0,
-        "wheel_width": 0.0,
-        "width": 0.0
-    }
+    __slots__ = ("engine", "direction", "camera", "lidar")
 
-    __TYPES = {
-        "back_to_wheel": (int, float),
-        "length": (int, float),
-        "max_acceleration": (int, float),
-        "max_downsteering": (int, float),
-        "max_speed": (int, float),
-        "max_steering": (int, float),
-        "min_speed": (int, float),
-        "tread": (int, float),
-        "wheel_base": (int, float),
-        "wheel_length": (int, float),
-        "wheel_width": (int, float),
-        "width": (int, float)
-    }
-
-    def __init__(self, **kwargs):
+    def __init__(self, engine: Engine, direction: Direction,
+                 camera: Optional[Camera] = None, lidar: Optional[Lidar] = None
+                 ) -> None:
         """Initialize a CarStructure instance.
 
         Args:
-            kwargs: dictionary of properties to be stored in the instance.
+            engine (Engine): engine of the car.
+            direction (Direction): direction of the car.
+            camera (Camera, optional): camera of the car.
+            lidar (Lidar, optional): lidar of the car.
         """
-        self._dictionary = self.__DEFAULTS.copy()
-        self._dictionary.update(kwargs)
-
-        # Method redirection:
-        self.get = self._dictionary.get
-        self.clear = self._dictionary.clear
-        self.copy = self._dictionary.copy
-        self.fromkeys = self._dictionary.fromkeys
-        self.get = self._dictionary.get
-        self.items = self._dictionary.items
-        self.keys = self._dictionary.keys
-        self.pop = self._dictionary.pop
-        self.popitem = self._dictionary.popitem
-        self.setdefault = self._dictionary.setdefault
-        self.values = self._dictionary.values
-
-    def __getattr__(self, name: str):
-        """Get an attribute from the instance dictionary.
-
-        Args:
-            name (str): the name of the attribute.
-
-        Returns:
-            Any: the value of the attribute.
-        """
-        return self._dictionary.get(name)
-
-    def __setattr__(self, name: str, value: Any):
-        """Set an attribute in the instance dictionary.
-
-        Args:
-            name (str): the name of the attribute.
-            value (Any): the value of the attribute.
-        """
-        # Recursion error avoidance:
-        if name != "dictionary" and name not in self._dictionary.__dir__():
-
-            # Invalid attribute checking:
-            if name not in self._dictionary:
-                raise AttributeError(
-                    f"invalid attribute: \"{name}\". Possible values are: "
-                    + ', '.join(
-                        f"\"{key}\""
-                        for key in self._dictionary.keys()
-                    ) + '.'
-                )
-
-            # Invalid type checking:
-            if not isinstance(value, self.__TYPES[name]):
-                raise TypeError(
-                    f"invalid type for attribute {name}."
-                    f" Expected {self.__TYPES[name]}, got {type(value)}."
-                )
-
-            self._dictionary[name] = value
-
-        else:
-            self.__dict__[name] = value
+        self.engine = engine
+        self.direction = direction
+        self.camera = camera
+        self.lidar = lidar
 
 
 class Car:
@@ -179,29 +143,21 @@ class Car:
 
     This class represent the car element, which is composed of a structure
     (static properties, time-independent) and a state (dynamic properties,
-    time-dependent). It also includes the detection hardware of the car, such
-    as the camera and/or the lidar.
+    time-dependent).
 
     Attributes:
         state (CarState): state of the car at a given instant.
         structure (CarStructure): structure of the car.
-        camera (Camera, optional): camera of the car.
-        lidar (Lidar, optional): lidar of the car.
     """
 
-    def __init__(
-        self, state: CarState, structure: CarStructure,
-        camera: Optional[Camera] = None, lidar: Optional[Lidar] = None
-    ) -> None:
+    __slots__ = ("state", "structure")
+
+    def __init__(self, state: CarState, structure: CarStructure) -> None:
         """Initialize a Car instance.
 
         Args:
             state (CarState): state of the car at a given instant.
             structure (CarStructure): structure of the car.
-            camera (Camera, optional): camera of the car.
-            lidar (Lidar, optional): lidar of the car.
         """
         self.state = state
         self.structure = structure
-        self.camera = camera
-        self.lidar = lidar
