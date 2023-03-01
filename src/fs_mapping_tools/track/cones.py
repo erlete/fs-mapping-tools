@@ -274,7 +274,7 @@ class ConeArray(Sequence):
         Returns:
             str: type of cones in the array.
         """
-        return self.cones[0].type
+        return self.cones[0].type if self.cones else None
 
     def append(self, cone: Cone) -> None:
         """Append a cone to the array.
