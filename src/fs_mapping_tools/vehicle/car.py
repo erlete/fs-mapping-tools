@@ -6,9 +6,11 @@ a car object on track.
 Authors:
     Paulo Sanchez (@erlete)
 """
+from __future__ import annotations
 
 from typing import Optional, Tuple, Union
 
+import numpy as np
 from bidimensional import Coordinate
 
 from ..vehicle.detection import Camera, Lidar
@@ -77,20 +79,23 @@ class Wheel:
     Attributes:
         diameter (Union[int, float]): diameter of the wheel [m].
         width (Union[int, float]): width of the wheel [m].
+        weight (Union[int, float]): weight of the wheel [kg].
     """
 
-    __slots__ = ("diameter", "width")
+    __slots__ = ("diameter", "width", "weight")
 
     def __init__(self, diameter: Union[int, float],
-                 width: Union[int, float]) -> None:
+                 width: Union[int, float], weight: Union[int, float]) -> None:
         """Initialize a Wheel instance.
 
         Args:
             diameter (Union[int, float]): diameter of the wheel [m].
             width (Union[int, float]): width of the wheel [m].
+            weight (Union[int, float]): weight of the wheel [kg].
         """
         self.diameter = diameter
         self.width = width
+        self.weight = weight
 
 
 class Axis:
@@ -204,27 +209,51 @@ class CarStructure:
     detection hardware of the car, such as the camera and/or the lidar.
 
     Attributes:
+        length (Union[int, float]): length of the car [m].
+        width (Union[int, float]): width of the car [m].
+        height (Union[int, float]): height of the car [m].
         engine (Engine): engine of the car.
         direction (Direction): direction of the car.
+        front_to_axis (Optional[Union[int, float]], optional): distance between
+            the front of the car and the front axis [m].
+        rear_to_axis (Optional[Union[int, float]], optional): distance between
+            the rear of the car and the rear axis [m].
         camera (Camera, optional): camera of the car.
         lidar (Lidar, optional): lidar of the car.
     """
 
-    __slots__ = ("engine", "direction", "camera", "lidar")
+    __slots__ = ("length", "width", "height", "engine", "direction",
+                 "front_to_axis", "rear_to_axis", "camera", "lidar")
 
-    def __init__(self, engine: Engine, direction: Direction,
+    def __init__(self, length: Union[int, float], width: Union[int, float],
+                 height: Union[int, float],
+                 engine: Engine, direction: Direction,
+                 front_to_axis: Optional[Union[int, float]] = None,
+                 rear_to_axis: Optional[Union[int, float]] = None,
                  camera: Optional[Camera] = None, lidar: Optional[Lidar] = None
                  ) -> None:
         """Initialize a CarStructure instance.
 
         Args:
+            length (Union[int, float]): length of the car [m].
+            width (Union[int, float]): width of the car [m].
+            height (Union[int, float]): height of the car [m].
             engine (Engine): engine of the car.
             direction (Direction): direction of the car.
+            front_to_axis (Optional[Union[int, float]], optional): distance
+                between the front of the car and the front axis [m].
+            rear_to_axis (Optional[Union[int, float]], optional): distance
+                between the rear of the car and the rear axis [m].
             camera (Camera, optional): camera of the car.
             lidar (Lidar, optional): lidar of the car.
         """
+        self.length = length
+        self.width = width
+        self.height = height
         self.engine = engine
         self.direction = direction
+        self.front_to_axis = front_to_axis
+        self.rear_to_axis = rear_to_axis
         self.camera = camera
         self.lidar = lidar
 
