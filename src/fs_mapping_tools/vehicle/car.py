@@ -32,16 +32,23 @@ class State:
     """
 
     __slots__ = (
-        "position", "orientation", "steering", "speed", "acceleration",
-        "torque"
+        "position",
+        "orientation",
+        "steering",
+        "speed",
+        "acceleration",
+        "torque",
     )
 
-    def __init__(self, position: Optional[Coordinate] = None,
-                 orientation: Optional[Union[int, float]] = 0,
-                 steering: Optional[Union[int, float]] = 0,
-                 speed: Optional[Union[int, float]] = 0,
-                 acceleration: Optional[Union[int, float]] = 0,
-                 torque: Optional[Union[int, float]] = 0) -> None:
+    def __init__(
+        self,
+        position: Optional[Coordinate] = None,
+        orientation: Optional[Union[int, float]] = 0,
+        steering: Optional[Union[int, float]] = 0,
+        speed: Optional[Union[int, float]] = 0,
+        acceleration: Optional[Union[int, float]] = 0,
+        torque: Optional[Union[int, float]] = 0,
+    ) -> None:
         """Initialize a State instance.
 
         Args:
@@ -84,8 +91,12 @@ class Wheel:
 
     __slots__ = ("diameter", "width", "weight")
 
-    def __init__(self, diameter: Union[int, float],
-                 width: Union[int, float], weight: Union[int, float]) -> None:
+    def __init__(
+        self,
+        diameter: Union[int, float],
+        width: Union[int, float],
+        weight: Union[int, float],
+    ) -> None:
         """Initialize a Wheel instance.
 
         Args:
@@ -114,9 +125,13 @@ class Axis:
 
     __slots__ = ("left_wheel", "right_wheel", "steering_angle", "track")
 
-    def __init__(self, left_wheel: Wheel, right_wheel: Wheel,
-                 steering_angle: Union[int, float],
-                 track: Union[int, float]) -> None:
+    def __init__(
+        self,
+        left_wheel: Wheel,
+        right_wheel: Wheel,
+        steering_angle: Union[int, float],
+        track: Union[int, float],
+    ) -> None:
         """Initialize an Axis instance.
 
         Args:
@@ -148,8 +163,9 @@ class Direction:
 
     __slots__ = ("front_axis", "rear_axis", "wheelbase")
 
-    def __init__(self, front_axis: Axis, rear_axis: Axis,
-                 wheelbase: Union[int, float]) -> None:
+    def __init__(
+        self, front_axis: Axis, rear_axis: Axis, wheelbase: Union[int, float]
+    ) -> None:
         """Initialize a Direction instance.
 
         Args:
@@ -184,7 +200,7 @@ class Engine:
         self,
         speed: Tuple[Union[int, float], Union[int, float]],
         acceleration: Tuple[Union[int, float], Union[int, float]],
-        torque: Tuple[Union[int, float], Union[int, float]]
+        torque: Tuple[Union[int, float], Union[int, float]],
     ) -> None:
         """Initialize an Engine instance.
 
@@ -222,16 +238,30 @@ class Structure:
         lidar (Lidar, optional): lidar of the car.
     """
 
-    __slots__ = ("length", "width", "height", "engine", "direction",
-                 "front_to_axis", "rear_to_axis", "camera", "lidar")
+    __slots__ = (
+        "length",
+        "width",
+        "height",
+        "engine",
+        "direction",
+        "front_to_axis",
+        "rear_to_axis",
+        "camera",
+        "lidar",
+    )
 
-    def __init__(self, length: Union[int, float], width: Union[int, float],
-                 height: Union[int, float],
-                 engine: Engine, direction: Direction,
-                 front_to_axis: Optional[Union[int, float]] = None,
-                 rear_to_axis: Optional[Union[int, float]] = None,
-                 camera: Optional[Camera] = None, lidar: Optional[Lidar] = None
-                 ) -> None:
+    def __init__(
+        self,
+        length: Union[int, float],
+        width: Union[int, float],
+        height: Union[int, float],
+        engine: Engine,
+        direction: Direction,
+        front_to_axis: Optional[Union[int, float]] = None,
+        rear_to_axis: Optional[Union[int, float]] = None,
+        camera: Optional[Camera] = None,
+        lidar: Optional[Lidar] = None,
+    ) -> None:
         """Initialize a Structure instance.
 
         Args:
