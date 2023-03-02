@@ -8,7 +8,7 @@ Authors:
 """
 
 from math import cos, sin
-from typing import Any, List
+from typing import Any, List, Optional, Union
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -37,19 +37,26 @@ class Camera:
         "_detected", "_detection_area", "__ready_to_detect"
     )
 
-    def __init__(self, position: Coordinate, orientation: float,
-                 fov: float, detection_range: float):
+    def __init__(self, position: Optional[Coordinate] = None,
+                 orientation: Union[int, float] = 0,
+                 fov: Union[int, float] = 0,
+                 detection_range: Union[int, float] = 0) -> None:
         """Initialize a Camera instance.
 
         Args:
             position (Coordinate): position of the center of the camera.
-            orientation (float): orientation of the camera.
-            fov (float): field of view of the camera.
-            detection_range (float): detection range of the camera.
+                Defaults to None. If None, the position will be set to
+                Coordinate(0, 0).
+            orientation (int | float, optional): orientation of the camera.
+                Defaults to 0.
+            fov (int | float, optional): field of view of the camera. Defaults
+                to 0.
+            detection_range (int | float, optional): detection range of the
+                camera. Defaults to 0.
         """
         self.__ready_to_detect = False
 
-        self.position = position
+        self.position = position if position is not None else Coordinate(0, 0)
         self.orientation = orientation
         self.fov = fov
         self.detection_range = detection_range
@@ -94,19 +101,19 @@ class Camera:
         return self._orientation
 
     @orientation.setter
-    def orientation(self, value: float) -> None:
+    def orientation(self, value: Union[int, float]) -> None:
         """Set the orientation of the camera.
 
         Args:
-            value (float): new orientation of the camera.
+            value (int | float): new orientation of the camera.
 
         Raises:
-            TypeError: if the value is not a float.
+            TypeError: if the value is not an int or float.
         """
-        if not isinstance(value, float):
-            raise TypeError("value must be a float.")
+        if not isinstance(value, (int, float)):
+            raise TypeError("value must be an int or float.")
 
-        self._orientation = value
+        self._orientation = float(value)
 
         if self.__ready_to_detect:
             self._set_detection_area()
@@ -121,19 +128,19 @@ class Camera:
         return self._fov
 
     @fov.setter
-    def fov(self, value: float) -> None:
+    def fov(self, value: Union[int, float]) -> None:
         """Set the field of view of the camera.
 
         Args:
-            value (float): new field of view of the camera.
+            value (int | float): new field of view of the camera.
 
         Raises:
-            TypeError: if the value is not a float.
+            TypeError: if the value is not an int or float.
         """
-        if not isinstance(value, float):
-            raise TypeError("value must be a float.")
+        if not isinstance(value, (int, float)):
+            raise TypeError("value must be an int or float.")
 
-        self._fov = value
+        self._fov = float(value)
 
         if self.__ready_to_detect:
             self._set_detection_area()
@@ -148,19 +155,19 @@ class Camera:
         return self._detection_range
 
     @detection_range.setter
-    def detection_range(self, value: float) -> None:
+    def detection_range(self, value: Union[int, float]) -> None:
         """Set the detection range of the camera.
 
         Args:
-            value (float): new detection range of the camera.
+            value (int | float): new detection range of the camera.
 
         Raises:
-            TypeError: if the value is not a float.
+            TypeError: if the value is not an int or float.
         """
-        if not isinstance(value, float):
-            raise TypeError("value must be a float.")
+        if not isinstance(value, (int, float)):
+            raise TypeError("value must be an int or float.")
 
-        self._detection_range = value
+        self._detection_range = float(value)
 
         if self.__ready_to_detect:
             self._set_detection_area()
