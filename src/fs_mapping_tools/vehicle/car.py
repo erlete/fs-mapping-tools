@@ -306,3 +306,60 @@ class Car:
         """
         return speed * 3.6
 
+    @classmethod
+    def fsuk_adsdv_camera(cls) -> Car:
+        """Get a Car instance with FSUK (AI) ADS-DV specifications.
+
+        Returns:
+            Car: Car instance with FSUK (AI) ADS-DV specifications.
+        """
+        return cls(
+            state=CarState(),
+            structure=CarStructure(
+                length=2.8146,
+                width=1.430,
+                height=0.664,
+                engine=Engine(
+                    speed=(0, cls.kmh_to_ms(50)),
+                    acceleration=(0, 10),
+                    torque=(0, 1000)
+                ),
+                direction=Direction(
+                    front_axis=Axis(
+                        left_wheel=Wheel(
+                            diameter=0.513,
+                            width=0.229,
+                            weight=5.7
+                        ),
+                        right_wheel=Wheel(
+                            diameter=0.513,
+                            width=0.229,
+                            weight=5.7
+                        ),
+                        steering_angle=np.deg2rad(27.2),
+                        track=1.201
+                    ),
+                    rear_axis=Axis(
+                        left_wheel=Wheel(
+                            diameter=0.513,
+                            width=0.229,
+                            weight=5.7
+                        ),
+                        right_wheel=Wheel(
+                            diameter=0.513,
+                            width=0.229,
+                            weight=5.7
+                        ),
+                        steering_angle=0,
+                        track=1.201
+                    ),
+                    wheelbase=1.530
+                ),
+                camera=Camera(
+                    fov=np.deg2rad(120),
+                    detection_range=40
+                ),
+                front_to_axis=0.7209,
+                rear_to_axis=0.5637
+            )
+        )
