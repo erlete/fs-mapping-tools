@@ -7,8 +7,7 @@ Authors:
     Paulo Sanchez (@erlete)
 """
 
-
-from typing import Any, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from bidimensional import Coordinate
 
@@ -35,20 +34,33 @@ class CarState:
         "torque"
     )
 
-    def __init__(self, position: Coordinate, orientation: float,
-                 steering: float, speed: float, acceleration: float,
-                 torque: float) -> None:
+    def __init__(self, position: Optional[Coordinate] = None,
+                 orientation: Optional[Union[int, float]] = 0,
+                 steering: Optional[Union[int, float]] = 0,
+                 speed: Optional[Union[int, float]] = 0,
+                 acceleration: Optional[Union[int, float]] = 0,
+                 torque: Optional[Union[int, float]] = 0) -> None:
         """Initialize a CarState instance.
 
         Args:
-            position (Coordinate): position of the car (x [m], y [m]).
-            orientation (float): orientation of the car (front view) [rad].
-            steering (float): steering of the front wheels of the car [rad].
-            speed (float): speed of the car [m/s].
-            acceleration (float): acceleration of the car [m/s^2].
-            torque (float): torque of the engine [Nm].
+            position (Coordinate, optional): position of the car (x [m],
+                y [m]). Defaults to None. If None, the position will be set to
+                Coordinate(0, 0).
+            orientation (int | float, optional): orientation of the car (front
+                view) [rad]. Defaults to 0.
+            steering (int | float, optional): steering of the front wheels of
+                the car [rad]. Defaults to 0.
+            speed (int | float, optional): speed of the car [m/s]. Defaults
+                to 0.
+            acceleration (int | float, optional): acceleration of the car
+                [m/s^2]. Defaults to 0.
+            torque (int | float, optional): torque of the engine [Nm]. Defaults
+                to 0.
         """
-        self.position = position
+        if position is not None:
+            self.position = position
+        else:
+            self.position = Coordinate(0, 0)
         self.orientation = orientation
         self.steering = steering
         self.speed = speed
