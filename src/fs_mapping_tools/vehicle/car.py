@@ -16,7 +16,7 @@ from bidimensional import Coordinate
 from ..vehicle.detection import Camera, Lidar
 
 
-class CarState:
+class State:
     """Car state representation class.
 
     This class represent the state of the car at a given instant during the
@@ -42,7 +42,7 @@ class CarState:
                  speed: Optional[Union[int, float]] = 0,
                  acceleration: Optional[Union[int, float]] = 0,
                  torque: Optional[Union[int, float]] = 0) -> None:
-        """Initialize a CarState instance.
+        """Initialize a State instance.
 
         Args:
             position (Coordinate, optional): position of the car (x [m],
@@ -201,7 +201,7 @@ class Engine:
         self.torque = torque
 
 
-class CarStructure:
+class Structure:
     """Car structure representation class.
 
     This class represent the static structure of the car, including all
@@ -232,7 +232,7 @@ class CarStructure:
                  rear_to_axis: Optional[Union[int, float]] = None,
                  camera: Optional[Camera] = None, lidar: Optional[Lidar] = None
                  ) -> None:
-        """Initialize a CarStructure instance.
+        """Initialize a Structure instance.
 
         Args:
             length (Union[int, float]): length of the car [m].
@@ -266,18 +266,18 @@ class Car:
     time-dependent).
 
     Attributes:
-        state (CarState): state of the car at a given instant.
-        structure (CarStructure): structure of the car.
+        state (State): state of the car at a given instant.
+        structure (Structure): structure of the car.
     """
 
     __slots__ = ("state", "structure")
 
-    def __init__(self, state: CarState, structure: CarStructure) -> None:
+    def __init__(self, state: State, structure: Structure) -> None:
         """Initialize a Car instance.
 
         Args:
-            state (CarState): state of the car at a given instant.
-            structure (CarStructure): structure of the car.
+            state (State): state of the car at a given instant.
+            structure (Structure): structure of the car.
         """
         self.state = state
         self.structure = structure
@@ -314,8 +314,8 @@ class Car:
             Car: Car instance with FSUK (AI) ADS-DV specifications.
         """
         return cls(
-            state=CarState(),
-            structure=CarStructure(
+            state=State(),
+            structure=Structure(
                 length=2.8146,
                 width=1.430,
                 height=0.664,
