@@ -281,3 +281,28 @@ class Car:
         """
         self.state = state
         self.structure = structure
+
+    @staticmethod
+    def kmh_to_ms(speed: Union[int, float]) -> float:
+        """Convert speed from km/h to m/s.
+
+        Args:
+            speed (Union[int, float]): speed in km/h.
+
+        Returns:
+            float: speed in m/s.
+        """
+        return speed / 3.6
+
+    @staticmethod
+    def ms_to_kmh(speed: Union[int, float]) -> float:
+        """Convert speed from m/s to km/h.
+
+        Args:
+            speed (Union[int, float]): speed in m/s.
+
+        Returns:
+            float: speed in km/h.
+        """
+        return speed * 3.6
+
