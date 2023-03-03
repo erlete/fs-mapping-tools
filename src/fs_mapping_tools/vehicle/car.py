@@ -8,10 +8,12 @@ Authors:
 """
 from __future__ import annotations
 
+from math import cos, pi, sin
 from typing import Optional, Tuple, Union
 
 import numpy as np
-from bidimensional import Coordinate
+from bidimensional import Coordinate, Segment
+from bidimensional.polygons import Polygon
 
 from ..vehicle.detection import Camera, Lidar
 
@@ -105,6 +107,45 @@ class Wheel:
         self.width = width
         self.weight = weight
 
+    def plot(self, state: State, center: Coordinate, max_steering: float) -> None:
+        orientation = state.orientation
+        steering = (
+            state.steering if abs(state.steering) < max_steering
+            else max_steering
+        )
+
+        wheel = Polygon(
+            Coordinate(
+                cos(orientation + steering) * (self.diameter / 2),
+                sin(orientation + steering) * (self.diameter / 2)
+            ) + center + Coordinate(
+                cos(orientation + (pi / 2) + steering) * (self.width / 2),
+                sin(orientation + (pi / 2) + steering) * (self.width / 2)
+            ),
+            -Coordinate(
+                cos(orientation + steering) * (self.diameter / 2),
+                sin(orientation + steering) * (self.diameter / 2)
+            ) + center + Coordinate(
+                cos(orientation + (pi / 2) + steering) * (self.width / 2),
+                sin(orientation + (pi / 2) + steering) * (self.width / 2)
+            ),
+            -Coordinate(
+                cos(orientation + steering) * (self.diameter / 2),
+                sin(orientation + steering) * (self.diameter / 2)
+            ) + center - Coordinate(
+                cos(orientation + (pi / 2) + steering) * (self.width / 2),
+                sin(orientation + (pi / 2) + steering) * (self.width / 2)
+            ),
+            Coordinate(
+                cos(orientation + steering) * (self.diameter / 2),
+                sin(orientation + steering) * (self.diameter / 2)
+            ) + center - Coordinate(
+                cos(orientation + (pi / 2) + steering) * (self.width / 2),
+                sin(orientation + (pi / 2) + steering) * (self.width / 2)
+            )
+        )
+
+        wheel.plot(annotate=False)
 
 class Axis:
     """Direction axis representation class.
@@ -116,7 +157,6 @@ class Axis:
     Attributes:
         left_wheel (Wheel): left wheel of the axis.
         right_wheel (Wheel): right wheel of the axis.
-        steering_angle (Union[int, float]): steering angle of the axis [rad].
         max_steering (Union[int, float]): steering angle of the axis [rad].
         track (Union[int, float]): distance between the wheels of the axis [m].
     """
@@ -144,6 +184,22 @@ class Axis:
         self.max_steering = max_steering
         self.track = track
 
+    def plot(self, state: State, center: Coordinate) -> None:
+        main_axis = Segment(
+            Coordinate(
+                cos(state.orientation + pi / 2) * (self.track / 2),
+                sin(state.orientation + pi / 2) * (self.track / 2)
+            ) + center,
+            -Coordinate(
+                cos(state.orientation + pi / 2) * (self.track / 2),
+                sin(state.orientation + pi / 2) * (self.track / 2)
+            ) + center
+        )
+
+        self.left_wheel.plot(state, main_axis.a, self.max_steering)
+        self.right_wheel.plot(state, main_axis.b, self.max_steering)
+
+        main_axis.plot()
 
 class Direction:
     """Direction system representation class.
@@ -175,6 +231,21 @@ class Direction:
         self.rear_axis = rear_axis
         self.wheelbase = wheelbase
 
+    def plot(self, state: State) -> None:
+        main_axis = Segment(
+            Coordinate(
+                cos(state.orientation) * self.wheelbase / 2,
+                sin(state.orientation) * self.wheelbase / 2
+            ) + state.position,
+            -Coordinate(
+                cos(state.orientation) * self.wheelbase / 2,
+                sin(state.orientation) * self.wheelbase / 2
+            ) + state.position
+        )
+        self.front_axis.plot(state, main_axis.a)
+        self.rear_axis.plot(state, main_axis.b)
+
+        main_axis.plot()
 
 class Engine:
     """Engine representation class.
@@ -284,6 +355,9 @@ class Structure:
         self.camera = camera
         self.lidar = lidar
 
+    def plot(self, state: State) -> None:
+        self.direction.plot(state)
+
 
 class Car:
     """Car representation class.
@@ -332,6 +406,9 @@ class Car:
             float: speed in km/h.
         """
         return speed * 3.6
+
+    def plot(self):
+        self.structure.plot(self.state)
 
     @classmethod
     def fsuk_adsdv_camera(cls) -> Car:
