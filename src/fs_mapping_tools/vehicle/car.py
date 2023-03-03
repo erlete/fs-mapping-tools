@@ -11,6 +11,8 @@ from __future__ import annotations
 from math import cos, pi, sin
 from typing import Optional, Tuple, Union
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 from bidimensional import Coordinate, Segment
 from bidimensional.polygons import Polygon
@@ -107,12 +109,25 @@ class Wheel:
         self.width = width
         self.weight = weight
 
-    def plot(self, state: State, center: Coordinate, max_steering: float) -> None:
+    def plot(self, state: State, center: Coordinate,
+             max_steering: float, ax: matplotlib.axes.Axes = None,
+             **kwargs) -> None:
+        """Plot the wheel.
+
+        Args:
+            state (State): state of the car.
+            center (Coordinate): center of the wheel.
+            max_steering (float): maximum steering angle of the direction.
+            ax (matplotlib.axes.Axes, optional): ax to plot on. Defaults to
+                None. If None, plt.gca() is used.
+            **kwargs: keyword arguments for matplotlib.pyplot.plot.
+        """
         orientation = state.orientation
         steering = (
             state.steering if abs(state.steering) < max_steering
             else max_steering
         )
+        ax = ax if ax is not None else plt.gca()
 
         wheel = Polygon(
             Coordinate(
@@ -145,7 +160,8 @@ class Wheel:
             )
         )
 
-        wheel.plot(annotate=False)
+        wheel.plot(ax=ax, annotate=False, **kwargs)
+
 
 class Axis:
     """Direction axis representation class.
@@ -184,7 +200,19 @@ class Axis:
         self.max_steering = max_steering
         self.track = track
 
-    def plot(self, state: State, center: Coordinate) -> None:
+    def plot(self, state: State, center: Coordinate,
+             ax: matplotlib.axes.Axes = None, **kwargs) -> None:
+        """Plot the axis.
+
+        Args:
+            state (State): state of the car.
+            center (Coordinate): center of the axis.
+            ax (matplotlib.axes.Axes, optional): ax to plot on. Defaults to
+                None. If None, plt.gca() is used.
+            **kwargs: keyword arguments for matplotlib.pyplot.plot.
+        """
+        ax = ax if ax is not None else plt.gca()
+
         main_axis = Segment(
             Coordinate(
                 cos(state.orientation + pi / 2) * (self.track / 2),
@@ -196,10 +224,13 @@ class Axis:
             ) + center
         )
 
-        self.left_wheel.plot(state, main_axis.a, self.max_steering)
-        self.right_wheel.plot(state, main_axis.b, self.max_steering)
+        self.left_wheel.plot(state, main_axis.a, self.max_steering,
+                             ax=ax, **kwargs)
+        self.right_wheel.plot(state, main_axis.b, self.max_steering,
+                              ax=ax, **kwargs)
 
-        main_axis.plot()
+        main_axis.plot(ax=ax, **kwargs)
+
 
 class Direction:
     """Direction system representation class.
@@ -231,7 +262,19 @@ class Direction:
         self.rear_axis = rear_axis
         self.wheelbase = wheelbase
 
-    def plot(self, state: State) -> None:
+    def plot(self,
+             state: State, ax: matplotlib.axes.Axes = None, **kwargs
+             ) -> None:
+        """Plot the direction system.
+
+        Args:
+            state (State): state of the car.
+            ax (matplotlib.axes.Axes, optional): ax to plot on. Defaults to
+                None. If None, plt.gca() is used.
+            **kwargs: keyword arguments for matplotlib.pyplot.plot.
+        """
+        ax = ax if ax is not None else plt.gca()
+
         main_axis = Segment(
             Coordinate(
                 cos(state.orientation) * self.wheelbase / 2,
@@ -242,10 +285,12 @@ class Direction:
                 sin(state.orientation) * self.wheelbase / 2
             ) + state.position
         )
-        self.front_axis.plot(state, main_axis.a)
-        self.rear_axis.plot(state, main_axis.b)
 
-        main_axis.plot()
+        self.front_axis.plot(state, main_axis.a, ax=ax, **kwargs)
+        self.rear_axis.plot(state, main_axis.b, ax=ax, **kwargs)
+
+        main_axis.plot(ax=ax, **kwargs)
+
 
 class Engine:
     """Engine representation class.
@@ -355,8 +400,20 @@ class Structure:
         self.camera = camera
         self.lidar = lidar
 
-    def plot(self, state: State) -> None:
-        self.direction.plot(state)
+    def plot(self,
+             state: State, ax: matplotlib.axes.Axes = None, **kwargs
+             ) -> None:
+        """Plot the axis.
+
+        Args:
+            state (State): state of the car.
+            ax (matplotlib.axes.Axes, optional): ax to plot on. Defaults to
+                None. If None, plt.gca() is used.
+            **kwargs: keyword arguments for matplotlib.pyplot.plot.
+        """
+        ax = ax if ax is not None else plt.gca()
+
+        self.direction.plot(state, ax=ax, **kwargs)
 
 
 class Car:
@@ -407,12 +464,26 @@ class Car:
         """
         return speed * 3.6
 
-    def plot(self):
-        self.structure.plot(self.state)
+    def plot(self, ax: matplotlib.axes.Axes = None, **kwargs) -> None:
+        """Plot the car.
+
+        This method is used to plot the whole car model, taking into account
+        most (or all) of its dynamic and static properties.
+
+        Args:
+            ax (matplotlib.axes.Axes, optional): ax to plot on. Defaults to
+                None. If None, plt.gca() is used.
+            **kwargs: keyword arguments for matplotlib.pyplot.plot.
+        """
+        ax = ax if ax is not None else plt.gca()
+
+        self.structure.plot(self.state, ax=ax, **kwargs)
 
     @classmethod
     def fsuk_adsdv_camera(cls) -> Car:
         """Get a Car instance with FSUK (AI) ADS-DV specifications.
+
+        Reference: https://www.imeche.org/docs/default-source/1-oscar/formula-student/2019/fs-ai/ads-dv-dimensions-and-locations-v0-1.pdf?sfvrsn=2  # noqa: ignore
 
         Returns:
             Car: Car instance with FSUK (AI) ADS-DV specifications.
@@ -423,10 +494,10 @@ class Car:
                 length=2.8146,
                 width=1.430,
                 height=0.664,
-                engine=Engine(
-                    speed=(0, cls.kmh_to_ms(50)),
-                    acceleration=(0, 10),
-                    torque=(0, 1000)
+                engine=Engine(  # Actually, the vehicle has got two engines.
+                    speed=(0, cls.kmh_to_ms(50)),  # Fictional.
+                    acceleration=(0, 10),  # Fictional.
+                    torque=(0, 1000)  # Fictional.
                 ),
                 direction=Direction(
                     front_axis=Axis(
