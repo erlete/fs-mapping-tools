@@ -117,16 +117,17 @@ class Axis:
         left_wheel (Wheel): left wheel of the axis.
         right_wheel (Wheel): right wheel of the axis.
         steering_angle (Union[int, float]): steering angle of the axis [rad].
+        max_steering (Union[int, float]): steering angle of the axis [rad].
         track (Union[int, float]): distance between the wheels of the axis [m].
     """
 
-    __slots__ = ("left_wheel", "right_wheel", "steering_angle", "track")
+    __slots__ = ("left_wheel", "right_wheel", "max_steering", "track")
 
     def __init__(
         self,
         left_wheel: Wheel,
         right_wheel: Wheel,
-        steering_angle: Union[int, float],
+        max_steering: Union[int, float],
         track: Union[int, float],
     ) -> None:
         """Initialize an Axis instance.
@@ -134,14 +135,13 @@ class Axis:
         Args:
             left_wheel (Wheel): left wheel of the axis.
             right_wheel (Wheel): right wheel of the axis.
-            steering_angle (Union[int, float]): steering angle of the axis
-                [rad].
+            max_steering (Union[int, float]): steering angle of the axis [rad].
             track (Union[int, float]): distance between the wheels of the axis
                 [m].
         """
         self.left_wheel = left_wheel
         self.right_wheel = right_wheel
-        self.steering_angle = steering_angle
+        self.max_steering = max_steering
         self.track = track
 
 
@@ -363,7 +363,7 @@ class Car:
                             width=0.229,
                             weight=5.7
                         ),
-                        steering_angle=np.deg2rad(27.2),
+                        max_steering=np.deg2rad(27.2),
                         track=1.201
                     ),
                     rear_axis=Axis(
@@ -377,7 +377,7 @@ class Car:
                             width=0.229,
                             weight=5.7
                         ),
-                        steering_angle=0,
+                        max_steering=0,
                         track=1.201
                     ),
                     wheelbase=1.530
