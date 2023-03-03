@@ -43,11 +43,11 @@ class State:
     def __init__(
         self,
         position: Optional[Coordinate] = None,
-        orientation: Optional[Union[int, float]] = 0,
-        steering: Optional[Union[int, float]] = 0,
-        speed: Optional[Union[int, float]] = 0,
-        acceleration: Optional[Union[int, float]] = 0,
-        torque: Optional[Union[int, float]] = 0,
+        orientation: Union[int, float] = 0,
+        steering: Union[int, float] = 0,
+        speed: Union[int, float] = 0,
+        acceleration: Union[int, float] = 0,
+        torque: Union[int, float] = 0,
     ) -> None:
         """Initialize a State instance.
 
@@ -66,10 +66,7 @@ class State:
             torque (int | float, optional): torque of the engine [Nm]. Defaults
                 to 0.
         """
-        if position is not None:
-            self.position = position
-        else:
-            self.position = Coordinate(0, 0)
+        self.position = position if position is not None else Coordinate(0, 0)
         self.orientation = orientation
         self.steering = steering
         self.speed = speed
