@@ -413,6 +413,7 @@ class Structure:
         """
         ax = ax if ax is not None else plt.gca()
 
+        self.camera.plot(ax=ax, **kwargs)
         self.direction.plot(state, ax=ax, **kwargs)
 
 

@@ -243,19 +243,20 @@ class Camera:
             )
         )
 
-    def plot(self, ax: matplotlib.axes.Axes = None) -> None:
+    def plot(self, ax: matplotlib.axes.Axes = None, **kwargs) -> None:
         """Plot the camera and detection range.
 
         Args:
-            ax (matplotlib.axes.Axes, optional): ax to plot the figure in.
-                Defaults to `plt.gca()` if None is passed as value.
+            ax (matplotlib.axes.Axes, optional): ax to plot on. Defaults to
+                None. If None, plt.gca() is used.
+            **kwargs: keyword arguments for matplotlib.pyplot.plot.
         """
         ax = ax if ax is not None else plt.gca()
 
         for triangle in self._detection_area:
-            triangle.plot(ax=ax, annotate=False)
+            triangle.plot(ax=ax, annotate=False, **kwargs)
 
-        self._position.plot(ax=ax, annotate=False)
+        self._position.plot(ax=ax, annotate=False, **kwargs)
 
     def __contains__(self, element: Any):
         """Determine whether an element is within the detection area.
