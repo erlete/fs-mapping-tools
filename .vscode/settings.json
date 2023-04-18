@@ -1,10 +1,11 @@
 {
-    "python.analysis.typeCheckingMode": "off",
     "python.testing.pytestArgs": [
-        "-vv"
+        "--cov=src", "--cov-report=term-missing",
+        "-vv", "-s", "--color=yes", "tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.linting.mypyEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+
 }

@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - stable
+      - dev
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  setup-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.3.0
+
+      - name: Set up Python (${{ matrix.python-version }}) for ${{ matrix.os }}
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install library dependencies
+        run: python -m pip install -Ur requirements.txt
+
+      - name: Install library
+        run: python -m pip install -e .
+
+      - name: Run pytest and flake8
+        run: pytest --cov=src --cov-report=term-missing -vv -s tests
+
+  generate-reports:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.3.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: "3.10"
+
+      - name: Install library dependencies
+        run: |
+          python -m pip install pytest pytest-cov
+          python -m pip install -Ur requirements.txt
+
+      - name: Install library
+        run: python -m pip install -e .
+
+      - name: Run pytest and flake8
+        run: |
+          [[ -d reports/data ]] && rm -r reports/data/*
+          mkdir -p reports/data/tests
+          pytest -qq --cov=src --cov-report=term-missing --cov-report=lcov tests
+          pytest --html=reports/data/tests/index.html --junitxml=reports/data/tests-report.xml tests
+
+      - name: Run flake8
+        run: |
+          python -m flake8 --extend-exclude __init__.py -qq --statistics --output-file reports/data/linter-report.txt src
+          python -m flake8 --extend-exclude __init__.py --format=html --htmldir=reports/data/linter src
+
+      - name: Generate report badges
+        run: |
+          genbadge tests -i reports/data/tests-report.xml -o reports/badges/tests.svg
+          genbadge flake8 -i reports/data/linter-report.txt -o reports/badges/linter.svg
+
+      - name: Send report to Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.lcov
+
+      - name: Config git
+        run: |
+          git config --local user.email "dev.szblzpaulo@gmail.com"
+          git config --local user.name "Paulo Sanchez"
+
+      - name: Commit and push reports
+        run: |
+          git add .
+          git commit -am "Update reports"
+          git push --force --repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/erlete/fs-mapping-tools
