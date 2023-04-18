@@ -10,7 +10,7 @@ import matplotlib
 from bidimensional import Coordinate
 from matplotlib import pyplot as plt
 
-from .config import CONES
+from ..config import CONES
 
 
 class Cone:
@@ -274,7 +274,7 @@ class ConeArray(Sequence):
         Returns:
             str: type of cones in the array.
         """
-        return self.cones[0].type
+        return self.cones[0].type if self.cones else None
 
     def append(self, cone: Cone) -> None:
         """Append a cone to the array.

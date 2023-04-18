@@ -1,5 +1,4 @@
 {
-    "python.analysis.typeCheckingMode": "off",
     "python.testing.pytestArgs": [
         "--cov=src", "--cov-report=term-missing",
         "-vv", "-s", "--color=yes", "tests"
@@ -8,8 +7,5 @@
     "python.testing.pytestEnabled": true,
     "python.linting.mypyEnabled": true,
     "python.linting.enabled": true,
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/python-tests.yml",
-        ".github/workflows/python-publish.yml"
-    ]
+
 }

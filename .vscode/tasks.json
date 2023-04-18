@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build: Build package",
+            "command": "python",
+            "args": [
+                "-m",
+                "pip",
+                "install",
+                "-e",
+                "."
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Tests: Test package",
+            "command": "python",
+            "args": [
+                "-m",
+                "pytest",
+                "--cov=src",
+                "--cov-report=term-missing",
+                "--verbosity=2",
+                "--capture=no",
+                "tests"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
