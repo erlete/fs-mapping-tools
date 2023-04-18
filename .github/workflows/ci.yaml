@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - stable
-      - dev
+    paths:
+      - "pyproject.toml"
 
 permissions:
   contents: write
