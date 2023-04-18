@@ -120,7 +120,7 @@ class Camera:
 
     @property
     def fov(self) -> float:
-        """field of viewfocal angle of the camera.
+        """Field of view of the camera.
 
         Returns:
             float: field of view of the camera.
