@@ -45,7 +45,7 @@ for i in ANGULAR_VALUES:
     plt.cla()
 
     cron = pc()
-    CAR.plot(color="red")
+    CAR.plot(color="black", linestyle="solid", ms=0)
     result = pc() - cron
     times.append(result)
 
@@ -56,7 +56,7 @@ for i in ANGULAR_VALUES:
     plt.subplot(1, 2, 2)
     plt.cla()
 
-    CAR.plot(color="red")
+    CAR.plot(color="black", linestyle="solid", ms=0)
 
     plt.grid(True)
     plt.axis("equal")

@@ -92,6 +92,13 @@ class Wheel:
 
     __slots__ = ("diameter", "width", "weight")
 
+    STYLES = {
+        "style": "-",
+        "color": "black",
+        "linewidth": 1,
+        "alpha": .75
+    }
+
     def __init__(
         self,
         diameter: Union[int, float],
@@ -122,6 +129,8 @@ class Wheel:
                 None. If None, plt.gca() is used.
             **kwargs: keyword arguments for matplotlib.pyplot.plot.
         """
+        self.STYLES.update(kwargs)
+
         orientation = state.orientation
         steering = (
             state.steering if abs(state.steering) < max_steering
